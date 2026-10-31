@@ -9,9 +9,19 @@
 <link rel="icon" type="image/png" href="marca/favicon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="estilo.css">
-<style>.quadro{border:0;width:100%;height:900px;border-radius:16px;background:#fff;box-shadow:0 4px 24px rgba(0,13,45,.12)}</style>
+<style>
+.conteudo{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.form-visto{max-width:640px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,13,45,.12);padding:28px;display:grid;gap:16px}
+.form-visto label{display:grid;gap:6px;font:800 .86rem var(--f-titulo);color:var(--marinho)}
+.form-visto input,.form-visto select,.form-visto textarea{width:100%;border:1px solid var(--linha);border-radius:10px;background:#fff;padding:12px 14px;font:600 1rem var(--f-corpo);color:var(--tinta);min-width:0}
+.form-visto textarea{min-height:110px;resize:vertical}
+.form-visto input:focus,.form-visto select:focus,.form-visto textarea:focus{border-color:var(--ouro);outline:0}
+.form-visto .btn-ouro{border:0;cursor:pointer;width:100%}
+.form-visto .obs{margin:0;font-size:.86rem;color:var(--tinta)}
+@media (max-width:480px){.form-visto{padding:20px 16px}}
+</style>
 </head>
-<body>
+<body data-pagina="visto">
 <header id="topo"></header>
 <main>
   <section class="pagina-topo"><div class="cx">
@@ -20,12 +30,48 @@
     <p class="lede">Preencha os dados abaixo e nossa equipe entra em contato.</p>
   </div></section>
   <div class="cx conteudo">
-    <iframe class="quadro" src="https://b2b.youvisa.com.br/partners/vaivoando" title="Solicitação de visto" loading="lazy"></iframe>
-    <p style="margin-top:16px">Se o formulário não aparecer acima, <a class="btn-ouro" target="_blank" rel="noopener" href="https://b2b.youvisa.com.br/partners/vaivoando">abra o formulário em outra aba</a>.</p>
+    <form class="form-visto" id="form-visto" novalidate>
+      <label>Nome do viajante
+        <input name="nome" type="text" autocomplete="name" required>
+      </label>
+      <label>Telefone (com DDD)
+        <input name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(16) 99999-9999" required>
+      </label>
+      <label>E-mail
+        <input name="email" type="email" autocomplete="email" required>
+      </label>
+      <label>Destino (país do visto)
+        <input name="destino" type="text" placeholder="Ex.: Estados Unidos" required>
+      </label>
+      <label>Comentários (opcional)
+        <textarea name="comentarios"></textarea>
+      </label>
+      <button class="btn-ouro" type="submit">Enviar pelo WhatsApp</button>
+      <p class="obs">Ao enviar, o WhatsApp abre com a mensagem pronta. É só tocar em enviar para falar com nossa equipe.</p>
+    </form>
+    <p>Prefere o formulário oficial? <a class="btn-ouro" target="_blank" rel="noopener" href="https://b2b.youvisa.com.br/partners/vaivoando">Abrir em outra aba</a></p>
   </div>
 </main>
 <footer class="rodape" id="rodape"></footer>
 <script src="config.js"></script>
 <script src="layout.js"></script>
+<script>
+document.getElementById("form-visto").addEventListener("submit", function (ev) {
+  ev.preventDefault();
+  var f = ev.target;
+  if (!f.reportValidity()) return;
+  var v = function (n) { return f.elements[n].value.trim(); };
+  var linhas = [
+    "Olá! Vim pelo site e quero ajuda com visto.",
+    "",
+    "Nome do viajante: " + v("nome"),
+    "Telefone: " + v("telefone"),
+    "E-mail: " + v("email"),
+    "Destino: " + v("destino")
+  ];
+  if (v("comentarios")) linhas.push("Comentários: " + v("comentarios"));
+  window.open(waLink(linhas.join("\n")), "_blank", "noopener");
+});
+</script>
 </body>
 </html>
