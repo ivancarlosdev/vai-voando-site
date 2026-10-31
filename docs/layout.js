@@ -40,7 +40,7 @@
     '<div class="faixa" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>' +
     '<div class="cx rodape-in">' +
     '<div class="rod-col rod-marca"><img src="marca/logo.png" width="96" height="96" alt="' + esc(A.nome) + '" loading="lazy">' +
-    '<p class="script">' + esc(A.slogan) + "</p><p>Franquia " + esc(A.marca) + ".</p></div>" +
+    '<p class="script">' + esc(A.slogan) + "</p><p>" + esc(A.marca) + ", franqueada da Vai Voando.</p></div>" +
     '<div class="rod-col"><h2>Navegue</h2><ul>' +
     paginas.map(function (p) { return '<li><a href="' + p.href + '">' + p.rotulo + "</a></li>"; }).join("") + "</ul></div>" +
     '<div class="rod-col"><h2>Fale com a gente</h2><ul>' +

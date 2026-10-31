@@ -15,7 +15,7 @@ window.AGENCIA = {
   instagramUsuario: "@vaivoando.moradadosol",
   endereco: { rua: "Alameda Paulista, 2026", cidade: "Araraquara", uf: "SP", cep: "14810-282" },
   // Números da página "Quem somos" e do visto. Atualize aqui.
-  numeros: { embarques: 626, destinos: 28, clientes: 4890, desde: 2025 },
+  numeros: { embarques: 626, destinos: 28, clientes: 4890, desde: 2015 },
   // Avaliações do Google. Para incluir outra, copie o texto da avaliação e acrescente um item em "itens".
   // "link" é a página da agência no Google (Maps). Troque pelo link curto do perfil, se tiver.
   avaliacoes: {

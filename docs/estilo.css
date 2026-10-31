@@ -316,3 +316,47 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 .aval figcaption { font: 800 .92rem var(--f-titulo); color: var(--marinho); }
 .aval figcaption small { display: block; font: 600 .78rem var(--f-corpo); color: var(--suave); }
 @media (max-width: 480px) { .avaliacoes { padding: 20px 16px; } }
+
+/* ---------- Texto "Uma agência perto de você" ---------- */
+.sub-360 { font-size: 1.15rem; margin: 22px 0 10px; color: var(--marinho); }
+.passos-360 { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 10px; counter-reset: s360; }
+.passos-360 li { counter-increment: s360; position: relative; padding: 12px 14px 12px 56px; background: var(--fundo-2); border-radius: 14px; line-height: 1.5; max-width: 64ch; }
+.passos-360 li::before { content: counter(s360); position: absolute; left: 14px; top: 12px; width: 30px; height: 30px; border-radius: 50%; background: var(--ouro); color: var(--marinho); font: 800 .95rem var(--f-titulo); display: grid; place-items: center; }
+.passos-360 b { display: block; color: var(--marinho); }
+.beneficios { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; max-width: 64ch; }
+.beneficios li { padding-left: 26px; position: relative; line-height: 1.5; }
+.beneficios li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--petroleo); font-weight: 800; }
+
+/* ---------- Arte dos pacotes sem foto ---------- */
+.foto .arte { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.foto.sem .sem-foto { z-index: 1; text-shadow: 0 2px 12px rgba(0, 13, 45, .65); }
+
+/* ---------- Tecnologia e parcerias ---------- */
+.tec { display: grid; gap: 22px; }
+.tec .tec-intro { max-width: 70ch; }
+.tec-passos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.tec-passos li { background: #fff; border: 1px solid var(--linha); border-top: 5px solid var(--petroleo); border-radius: var(--raio); padding: 18px; display: grid; gap: 6px; align-content: start; }
+.tec-passos li:nth-child(2) { border-top-color: var(--ouro); }
+.tec-passos li:nth-child(3) { border-top-color: var(--magenta); }
+.tec-passos b { font: 800 1.02rem var(--f-titulo); color: var(--marinho); }
+.tec-passos span { color: var(--suave); line-height: 1.5; font-size: .95rem; }
+.parceiras h3 { font-size: 1.05rem; margin: 0 0 10px; }
+.parceiras .chips li { background: var(--fundo-2); border-color: var(--linha); color: var(--marinho); }
+.tec-nota { margin: 0; font-size: .82rem; color: var(--suave); }
+@media (max-width: 860px) { .tec-passos { grid-template-columns: 1fr; } }
+
+/* Margem lateral nas páginas internas (o padding do .conteudo zerava a do .cx) */
+.cx.conteudo { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* ---------- História da Vai Voando e logos das parceiras ---------- */
+.historia { display: grid; gap: 4px; }
+.hist-abre { font-size: 1.12rem; line-height: 1.6; max-width: 64ch; margin: 0 0 14px; }
+.hist-linha { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; counter-reset: h; }
+.hist-linha li { position: relative; background: var(--fundo-2); border-radius: var(--raio); padding: 20px 18px 18px; display: grid; gap: 8px; align-content: start; line-height: 1.5; }
+.hist-linha .marco { justify-self: start; background: var(--marinho); color: var(--ouro); font: 800 .78rem var(--f-titulo); letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+.hist-linha b { font: 800 1.1rem var(--f-titulo); color: var(--marinho); }
+.hist-linha li > span:last-child { color: var(--suave); font-size: .95rem; }
+.logos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.logos li { background: #fff; border: 1px solid var(--linha); border-radius: 14px; height: 92px; display: grid; place-items: center; padding: 12px 16px; }
+.logos img { max-width: 100%; max-height: 64px; width: auto; height: auto; object-fit: contain; display: block; }
+@media (max-width: 860px) { .hist-linha { grid-template-columns: 1fr; } }
