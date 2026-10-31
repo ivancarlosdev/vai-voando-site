@@ -3,6 +3,7 @@
 // Uso do conteúdo autorizado pela Cativa Operadora.
 
 import { chromium } from "playwright";
+import sharp from "sharp";
 import { mkdir, writeFile, readFile, access } from "node:fs/promises";
 import path from "node:path";
 
@@ -119,31 +120,45 @@ async function existe(arquivo) {
   }
 }
 
-async function baixarImagens(context, dados) {
+// Baixa cada foto de capa uma única vez, reduz para 720 px de largura e salva em WebP (cerca de 50 KB).
+// As originais do portal passam de 5 MB e estourariam o limite de 1 GB do GitHub Pages.
+// Troca o campo "capa" de cada pacote pelo caminho da versão leve ("" se a foto não pôde ser preparada).
+async function prepararImagens(context, dados) {
   const capas = [...new Set(dados.pacotes.map((p) => p.capa).filter(Boolean))];
-  let baixadas = 0;
+  const mapa = new Map();
+  let novas = 0;
   let falhas = 0;
   const fila = [...capas];
+  await mkdir(path.join(PASTA, "img"), { recursive: true });
+
   async function trabalhador() {
     while (fila.length) {
       const capa = fila.shift();
-      const destino = path.join(PASTA, capa);
-      if (!destino.startsWith(PASTA + path.sep)) continue; // segurança: só grava dentro de docs/
-      if (await existe(destino)) continue;
+      const base = path.basename(capa).replace(/\.[^.]+$/, "").replace(/[^A-Za-z0-9_-]/g, "");
+      if (!base) { falhas++; continue; }
+      const rel = "img/" + base + ".webp";
+      const destino = path.join(PASTA, rel);
       try {
-        const resp = await context.request.get(new URL(capa, PORTAL).href, { timeout: 30_000 });
-        if (!resp.ok()) throw new Error("HTTP " + resp.status());
-        await mkdir(path.dirname(destino), { recursive: true });
-        await writeFile(destino, await resp.body());
-        baixadas++;
+        if (!(await existe(destino))) {
+          const resp = await context.request.get(new URL(capa, PORTAL).href, { timeout: 30_000 });
+          if (!resp.ok()) throw new Error("HTTP " + resp.status());
+          await sharp(await resp.body())
+            .rotate()
+            .resize({ width: 720, withoutEnlargement: true })
+            .webp({ quality: 72 })
+            .toFile(destino);
+          novas++;
+        }
+        mapa.set(capa, rel);
       } catch (e) {
         falhas++;
-        console.warn("Imagem não baixada:", capa, e.message);
+        console.warn("Imagem não preparada:", capa, e.message);
       }
     }
   }
   await Promise.all(Array.from({ length: 5 }, trabalhador));
-  console.log(`Imagens: ${baixadas} novas, ${falhas} com falha, ${capas.length} no total`);
+  dados.pacotes.forEach((p) => { p.capa = mapa.get(p.capa) || ""; });
+  console.log(`Imagens: ${novas} novas, ${falhas} com falha, ${capas.length} no total`);
 }
 
 async function main() {
@@ -175,12 +190,12 @@ async function main() {
     }
 
     await mkdir(PASTA, { recursive: true });
+    if (BAIXAR_IMAGENS) await prepararImagens(context, dados);
+
     const saida = { geradoEm: dados.geradoEm, fonte: PORTAL, total: n, pacotes: dados.pacotes };
     await writeFile(ARQUIVO + ".tmp", JSON.stringify(saida));
     await writeFile(ARQUIVO, await readFile(ARQUIVO + ".tmp"));
     console.log("Gravado:", ARQUIVO);
-
-    if (BAIXAR_IMAGENS) await baixarImagens(context, dados);
   } finally {
     await browser.close();
   }
