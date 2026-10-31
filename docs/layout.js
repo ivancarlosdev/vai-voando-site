@@ -77,6 +77,11 @@
       }).join("") + "</div>";
   }
 
+  // Roleta "Gire e ganhe"
+  if (A.roleta && A.roleta.ativa !== false) {
+    var rs = document.createElement("script"); rs.src = "roleta.js"; rs.defer = true; document.body.appendChild(rs);
+  }
+
   // Botões de WhatsApp avulsos: <a data-wa="mensagem" data-wa-num="1">
   document.querySelectorAll("[data-wa]").forEach(function (a) {
     var i = +(a.getAttribute("data-wa-num") || 0);
