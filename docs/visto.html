@@ -3,53 +3,115 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex">
 <title>Assessoria em visto | Vai Voando - Morada do Sol Viagens</title>
+<meta name="description" content="Assessoria em visto com a Vai Voando - Morada do Sol, de Araraquara (SP). Preencha a solicitação e nossa equipe entra em contato pelo WhatsApp.">
 <meta name="theme-color" content="#000d2d">
 <link rel="icon" type="image/png" href="marca/favicon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="estilo.css">
 <style>
 .conteudo{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.form-visto{max-width:640px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,13,45,.12);padding:28px;display:grid;gap:16px}
+.visto-topo{display:grid;grid-template-columns:1fr minmax(180px,300px);gap:24px;align-items:center}
+.visto-topo svg{width:100%;height:auto;display:block}
+.visto-grade{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:28px;align-items:start}
+.form-visto{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,13,45,.12);padding:28px;display:grid;gap:16px}
 .form-visto label{display:grid;gap:6px;font:800 .86rem var(--f-titulo);color:var(--marinho)}
-.form-visto input,.form-visto select,.form-visto textarea{width:100%;border:1px solid var(--linha);border-radius:10px;background:#fff;padding:12px 14px;font:600 1rem var(--f-corpo);color:var(--tinta);min-width:0}
+.form-visto input,.form-visto textarea{width:100%;border:1px solid var(--linha);border-radius:10px;background:#fff;padding:12px 14px;font:600 1rem var(--f-corpo);color:var(--tinta);min-width:0}
 .form-visto textarea{min-height:110px;resize:vertical}
-.form-visto input:focus,.form-visto select:focus,.form-visto textarea:focus{border-color:var(--ouro);outline:0}
+.form-visto input:focus,.form-visto textarea:focus{border-color:var(--ouro);outline:0}
 .form-visto .btn-ouro{border:0;cursor:pointer;width:100%}
 .form-visto .obs{margin:0;font-size:.86rem;color:var(--tinta)}
-@media (max-width:480px){.form-visto{padding:20px 16px}}
+.lateral{display:grid;gap:20px}
+.cartao-azul{background:radial-gradient(90% 120% at 100% 0%,rgba(1,124,157,.6),rgba(1,124,157,0) 65%),var(--marinho);color:#fff;border-radius:16px;padding:24px;display:grid;gap:14px}
+.cartao-azul h2{color:#fff;font-size:1.15rem;margin:0}
+.cartao-azul .script{font-size:1.4rem;margin:0}
+.cartao-azul ol{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:p}
+.cartao-azul li{counter-increment:p;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;font-size:.95rem;line-height:1.45;color:#d4dbf1}
+.cartao-azul li::before{content:counter(p);width:34px;height:34px;border-radius:50%;background:var(--ouro);color:var(--marinho);font:800 .95rem var(--f-titulo);display:grid;place-items:center}
+.cartao-azul li b{color:#fff;display:block}
+.cartao-claro{background:var(--fundo-2);border-top:4px solid var(--ouro);border-radius:0 0 16px 16px;padding:20px 22px}
+.cartao-claro h2{font-size:1.05rem;margin:0 0 8px}
+.cartao-claro p{margin:0 0 6px}
+.cartao-claro ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.cartao-claro li::before{content:"✓ ";color:var(--petroleo);font-weight:800}
+.oficial{margin:0}
+@media (max-width:860px){.visto-grade{grid-template-columns:1fr}.visto-topo{grid-template-columns:1fr 38%}}
+@media (max-width:480px){.form-visto{padding:20px 16px}.visto-topo{grid-template-columns:1fr 32%;gap:10px}}
 </style>
 </head>
 <body data-pagina="visto">
 <header id="topo"></header>
 <main>
-  <section class="pagina-topo"><div class="cx">
-    <h1>Assessoria em visto</h1>
-    <p class="script">Cuidamos da sua documentação.</p>
-    <p class="lede">Preencha os dados abaixo e nossa equipe entra em contato.</p>
+  <section class="pagina-topo"><div class="cx visto-topo">
+    <div>
+      <h1>Assessoria em visto</h1>
+      <p class="script">Cuidamos da sua documentação.</p>
+      <p class="lede">Preencha os dados abaixo e nossa equipe entra em contato.</p>
+    </div>
+    <svg viewBox="0 0 300 240" role="img" aria-label="Passaporte, mundo e avião" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="120" r="104" fill="#017c9d" opacity=".35"/>
+      <circle cx="150" cy="120" r="78" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>
+      <ellipse cx="150" cy="120" rx="34" ry="78" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>
+      <path d="M72 120h156M84 82h132M84 158h132" stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none"/>
+      <g transform="rotate(-8 150 128)">
+        <rect x="102" y="52" width="104" height="140" rx="10" fill="#d40f57"/>
+        <rect x="102" y="52" width="14" height="140" rx="6" fill="#a30a41"/>
+        <circle cx="160" cy="108" r="26" fill="none" stroke="#ffbd00" stroke-width="3"/>
+        <ellipse cx="160" cy="108" rx="10" ry="26" fill="none" stroke="#ffbd00" stroke-width="3"/>
+        <path d="M134 108h52M140 94h40M140 122h40" stroke="#ffbd00" stroke-width="3" fill="none"/>
+        <rect x="132" y="148" width="56" height="8" rx="4" fill="#ffbd00"/>
+        <rect x="142" y="162" width="36" height="6" rx="3" fill="#ffbd00" opacity=".7"/>
+      </g>
+      <g transform="translate(206 44) rotate(-20)">
+        <path d="M0 14 54 0 62 6 30 18 40 44 32 46 12 22 0 28 0 20 6 16Z" fill="#ffbd00"/>
+      </g>
+      <path d="M40 200c40-30 90-40 150-30" stroke="#acce00" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" fill="none"/>
+    </svg>
   </div></section>
+
   <div class="cx conteudo">
-    <form class="form-visto" id="form-visto" novalidate>
-      <label>Nome do viajante
-        <input name="nome" type="text" autocomplete="name" required>
-      </label>
-      <label>Telefone (com DDD)
-        <input name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(16) 99999-9999" required>
-      </label>
-      <label>E-mail
-        <input name="email" type="email" autocomplete="email" required>
-      </label>
-      <label>Destino (país do visto)
-        <input name="destino" type="text" placeholder="Ex.: Estados Unidos" required>
-      </label>
-      <label>Comentários (opcional)
-        <textarea name="comentarios"></textarea>
-      </label>
-      <button class="btn-ouro" type="submit">Enviar pelo WhatsApp</button>
-      <p class="obs">Ao enviar, o WhatsApp abre com a mensagem pronta. É só tocar em enviar para falar com nossa equipe.</p>
-    </form>
-    <p>Prefere o formulário oficial? <a class="btn-ouro" target="_blank" rel="noopener" href="https://b2b.youvisa.com.br/partners/vaivoando">Abrir em outra aba</a></p>
+    <div class="visto-grade">
+      <form class="form-visto" id="form-visto" novalidate>
+        <label>Nome do viajante
+          <input name="nome" type="text" autocomplete="name" required>
+        </label>
+        <label>Telefone (com DDD)
+          <input name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(16) 99999-9999" required>
+        </label>
+        <label>E-mail
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label>Destino (país do visto)
+          <input name="destino" type="text" placeholder="Ex.: Estados Unidos" required>
+        </label>
+        <label>Comentários (opcional)
+          <textarea name="comentarios"></textarea>
+        </label>
+        <button class="btn-ouro" type="submit">Enviar pelo WhatsApp</button>
+        <p class="obs">Ao enviar, o WhatsApp abre com a mensagem pronta. É só tocar em enviar para falar com nossa equipe.</p>
+      </form>
+
+      <aside class="lateral">
+        <figure class="foto-cartao"><img src="marca/agencia.webp" width="1521" height="856" alt="Interior da agência Vai Voando, em Araraquara" loading="lazy"><figcaption>Atendimento de perto, em Araraquara<small data-vis-clientes></small></figcaption></figure>
+        <div class="cartao-azul">
+          <p class="script">Como funciona</p>
+          <ol>
+            <li><span><b>Você preenche</b>Conte quem vai viajar e para qual país.</span></li>
+            <li><span><b>Chamamos no WhatsApp</b>Nossa equipe confirma os dados e explica o processo.</span></li>
+            <li><span><b>Cuidamos da documentação</b>Orientamos cada passo até o visto ficar pronto.</span></li>
+          </ol>
+        </div>
+        <div class="cartao-claro">
+          <h2>Tenha em mãos</h2>
+          <ul>
+            <li>Passaporte válido</li>
+            <li>Nome completo de cada viajante</li>
+            <li>País de destino e data prevista</li>
+          </ul>
+        </div>
+        <p class="oficial">Prefere o formulário oficial? <a class="btn-ouro" target="_blank" rel="noopener" href="https://b2b.youvisa.com.br/partners/vaivoando">Abrir em outra aba</a></p>
+      </aside>
+    </div>
   </div>
 </main>
 <footer class="rodape" id="rodape"></footer>
@@ -72,6 +134,7 @@ document.getElementById("form-visto").addEventListener("submit", function (ev) {
   if (v("comentarios")) linhas.push("Comentários: " + v("comentarios"));
   window.open(waLink(linhas.join("\n")), "_blank", "noopener");
 });
+document.querySelector("[data-vis-clientes]").textContent = "Mais de " + window.AGENCIA.numeros.clientes.toLocaleString("pt-BR") + " clientes atendidos";
 </script>
 </body>
 </html>

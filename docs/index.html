@@ -85,10 +85,10 @@
         <h3>Quem somos</h3>
         <p>Conheça a agência Morada do Sol em Araraquara.</p>
       </a>
-      <a class="atalho" href="#" data-wa="Olá! Quero cotar seguro viagem e assessoria em visto.">
+      <a class="atalho" href="visto.html">
         <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
-        <h3>Seguro viagem e visto</h3>
-        <p>Peça a cotação do seguro e ajuda com o visto.</p>
+        <h3>Assessoria em visto</h3>
+        <p>Preencha a solicitação e cuidamos da sua documentação.</p>
       </a>
     </section>
 
@@ -107,6 +107,16 @@
       </section>
     </div>
 
+    <section id="avaliacoes" class="avaliacoes" aria-labelledby="h-aval" style="margin-top:44px"></section>
+
+    <section class="insta" aria-labelledby="h-insta" style="margin-top:44px">
+      <div class="insta-cab">
+        <div><h2 id="h-insta">Viagens reais, clientes reais</h2><p style="margin:4px 0 0;color:var(--suave)">Acompanhe as novidades da agência no Instagram.</p></div>
+        <a class="btn-ouro" href="https://www.instagram.com/vaivoando.moradadosol/" target="_blank" rel="noopener">Seguir @vaivoando.moradadosol</a>
+      </div>
+      <behold-widget feed-id="ByULGqd5erXmPb6MzAhx"></behold-widget>
+    </section>
+
     <p class="aviso-carga" id="atualizado-linha" style="margin-top:28px"></p>
   </div>
 </main>
@@ -116,5 +126,12 @@
 <script src="config.js"></script>
 <script src="layout.js"></script>
 <script src="home.js"></script>
+<script>
+  (() => {
+    if(window.__bhldScript)return;window.__bhldScript=true;
+    const d=document,s=d.createElement("script");s.type="module";
+    s.src="https://w.behold.so/widget.js";setTimeout(()=>{d.head.append(s);},0);
+  })();
+</script>
 </body>
 </html>

@@ -25,19 +25,29 @@
 
 <main>
   <section class="pagina-topo">
-    <div class="cx">
-      <h1>Quem somos</h1>
-      <p class="script">Seu destino, nossa paixão.</p>
-      <p class="lede">A Vai Voando - Morada do Sol é uma agência de viagens de Araraquara, no interior de São Paulo, e faz parte da rede de franquias Morada do Sol Viagens.</p>
+    <div class="cx topo-foto">
+      <div>
+        <h1>Quem somos</h1>
+        <p class="script">Seu destino, nossa paixão.</p>
+        <p class="lede">A Vai Voando - Morada do Sol é uma agência de viagens de Araraquara, no interior de São Paulo, e faz parte da rede de franquias Morada do Sol Viagens.</p>
+      </div>
+      <figure class="moldura"><img src="marca/agencia.webp" width="1521" height="856" alt="Interior da agência Vai Voando, em Araraquara, com mapa-múndi luminoso e a parede azul da marca"></figure>
     </div>
   </section>
 
   <div class="cx conteudo">
 
+    <ul class="numeros" aria-label="A Vai Voando em números">
+      <li><small>Desde</small><strong data-num="desde" data-sem-sep>2025</strong><span>em Araraquara</span></li>
+      <li><small>Mais de</small><strong data-num="embarques">626</strong><span>embarques realizados</span></li>
+      <li><small>Mais de</small><strong data-num="destinos">28</strong><span>destinos pelo mundo</span></li>
+      <li><small>Mais de</small><strong data-num="clientes">4.890</strong><span>clientes atendidos</span></li>
+    </ul>
+
     <section class="duas-col">
       <div class="texto">
         <h2>Uma agência perto de você</h2>
-        <p>Abrimos as portas em março de 2025, em Araraquara, para ajudar as pessoas a planejar viagens com segurança e sem complicação.</p>
+        <p>Abrimos as portas em 2025, em Araraquara, para ajudar as pessoas a planejar viagens com segurança e sem complicação. Você pode vir conhecer a agência e conversar com a nossa equipe.</p>
         <p>Você escolhe o destino. A gente confere datas, valores e disponibilidade, e ajuda em cada etapa da reserva, do primeiro contato até a hora de embarcar.</p>
         <p>Além dos serviços da agência, vendemos pacotes de operadoras parceiras, como a Cativa Operadora, com saída de várias cidades do Brasil e opções de parcelamento.</p>
         <p><a class="btn-zap" data-wa="Olá! Vim pelo site da Vai Voando e quero conversar sobre uma viagem." href="#">Falar com a agência</a></p>
@@ -53,6 +63,31 @@
           <div><dt>Endereço</dt><dd>Alameda Paulista, 2026<br>Araraquara - SP<br>CEP 14810-282</dd></div>
         </dl>
       </aside>
+    </section>
+
+    <section class="mapa-cartao" aria-labelledby="h-mapa">
+      <div>
+        <h2 id="h-mapa">Já levamos nossos clientes para <span data-num="destinos">28</span> destinos</h2>
+        <p class="script">E o próximo pode ser o seu.</p>
+      </div>
+      <img src="mapa.svg" width="1000" height="520" alt="Mapa-múndi com aviões nos destinos já visitados: Estados Unidos, México, Chile, Argentina, Uruguai, Londres, Portugal, Xangai, Japão, Marrocos, Filipinas, Cabo Verde, Canadá e as capitais do Brasil" loading="lazy">
+      <div class="legenda-mapa" aria-hidden="true">
+        <span><i style="background:#d40f57"></i>Araraquara, onde tudo começa</span>
+        <span><i style="background:#ffbd00"></i>Destinos internacionais</span>
+        <span><i style="background:#acce00"></i>Capitais do Brasil</span>
+      </div>
+      <ul class="chips" aria-label="Destinos já visitados">
+        <li>Estados Unidos (Flórida, Las Vegas, Nova York)</li><li>México</li><li>Chile</li><li>Argentina</li><li>Uruguai</li><li>Londres</li><li>Portugal</li><li>Xangai</li><li>Japão</li><li>Marrocos</li><li>Filipinas</li><li>Cabo Verde</li><li>Canadá</li><li>Todas as capitais do Brasil</li>
+      </ul>
+    </section>
+
+    <section class="visita" aria-labelledby="h-visita">
+      <div class="texto">
+        <h2 id="h-visita">Venha nos conhecer</h2>
+        <p>Nossa agência fica na Alameda Paulista, 2026, em Araraquara. Aqui você é atendido de perto, com tempo para tirar dúvidas, comparar opções e planejar com calma.</p>
+        <p><a class="btn-ouro" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Alameda+Paulista+2026+Araraquara+SP">Ver como chegar</a></p>
+      </div>
+      <figure class="moldura"><img src="marca/agencia.webp" width="1521" height="856" alt="Recepção da agência, com cadeiras para atendimento e mapa-múndi na parede" loading="lazy"></figure>
     </section>
 
     <section aria-labelledby="h-servicos">
@@ -80,6 +115,8 @@
       </ol>
     </section>
 
+    <section id="avaliacoes" class="avaliacoes" aria-labelledby="h-aval"></section>
+
     <section class="chamada">
       <div><h2>Vamos planejar a sua próxima viagem?</h2><p class="script">Seu destino, nossa paixão.</p></div>
       <div class="acoes">
@@ -94,5 +131,27 @@
 
 <script src="config.js"></script>
 <script src="layout.js"></script>
+<script>
+(function () {
+  var n = window.AGENCIA.numeros;
+  var fmt = function (v, sem) { return sem ? String(v) : v.toLocaleString("pt-BR"); };
+  var reduz = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("[data-num]").forEach(function (el) {
+    var alvo = n[el.getAttribute("data-num")], sem = el.hasAttribute("data-sem-sep");
+    el.textContent = fmt(alvo, sem);
+    if (reduz || sem || !("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return; io.disconnect();
+      var ini = performance.now();
+      (function passo(agora) {
+        var p = Math.min(1, (agora - ini) / 1200);
+        el.textContent = fmt(Math.round(alvo * (1 - Math.pow(1 - p, 3))), false);
+        if (p < 1) requestAnimationFrame(passo);
+      })(ini);
+    }, { threshold: .4 });
+    io.observe(el);
+  });
+})();
+</script>
 </body>
 </html>

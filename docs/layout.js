@@ -14,6 +14,7 @@
     { href: "index.html", rotulo: "Início", chave: "inicio" },
     { href: "index.html#pacotes", rotulo: "Pacotes", chave: "pacotes" },
     { href: "quem-somos.html", rotulo: "Quem somos", chave: "quem-somos" },
+    { href: "visto.html", rotulo: "Visto", chave: "visto" },
     { href: "formas-de-pagamento.html", rotulo: "Formas de pagamento", chave: "pagamento" }
   ];
   var atual = document.body.getAttribute("data-pagina") || "inicio";
@@ -60,6 +61,21 @@
     var aberto = menu.classList.toggle("aberto");
     hamb.setAttribute("aria-expanded", String(aberto));
   });
+
+  // Destaque das avaliações do Google: <section id="avaliacoes"> (dados em config.js)
+  var av = A.avaliacoes, alvoAv = document.getElementById("avaliacoes");
+  if (av && alvoAv) {
+    var estrelas = '<span class="estrelas" aria-hidden="true">★★★★★</span>';
+    var nota = String(av.nota.toFixed(1)).replace(".", ",");
+    alvoAv.innerHTML =
+      '<div class="aval-topo"><div>' +
+      '<h2 id="h-aval">Somos ' + (av.nota % 1 ? nota : String(av.nota)) + ' estrelas no Google</h2>' +
+      '<p class="aval-sub">' + estrelas + ' <b>' + nota + '</b> · ' + av.total + ' avaliações de clientes</p></div>' +
+      '<a class="btn-ouro" href="' + av.link + '" target="_blank" rel="noopener">Ver no Google</a></div>' +
+      '<div class="aval-lista" tabindex="0" role="region" aria-label="Avaliações de clientes">' + av.itens.map(function (i) {
+        return '<figure class="aval"><div>' + estrelas + '</div><blockquote>“' + esc(i.texto) + '”</blockquote><figcaption>' + esc(i.nome) + ' <small>avaliação no Google</small></figcaption></figure>';
+      }).join("") + "</div>";
+  }
 
   // Botões de WhatsApp avulsos: <a data-wa="mensagem" data-wa-num="1">
   document.querySelectorAll("[data-wa]").forEach(function (a) {

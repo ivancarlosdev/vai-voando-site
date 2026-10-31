@@ -31,7 +31,7 @@
     { id: "cruzeiros", rot: "Cruzeiros", ic: "navio", servico: { t: "Cruzeiros", d: "Conte o roteiro que você imagina e o período. Enviamos as opções disponíveis.", m: "Olá! Quero cotar um cruzeiro. Período e roteiro desejado:" } },
     { id: "rodoviario", rot: "Rodoviário", ic: "onibus", servico: { t: "Passagens rodoviárias", d: "Informe a origem, o destino e a data da viagem de ônibus.", m: "Olá! Quero cotar passagem rodoviária. Origem, destino e data:" } },
     { id: "seguro", rot: "Seguro viagem", ic: "escudo", servico: { t: "Seguro viagem", d: "Conte o destino e o período da viagem e peça a cotação do seguro.", m: "Olá! Quero cotar seguro viagem. Destino e período:" } },
-    { id: "visto", rot: "Visto", ic: "passaporte", servico: { t: "Assessoria em visto", d: "Diga para qual país você precisa do visto. Orientamos os próximos passos.", m: "Olá! Preciso de assessoria em visto. País de destino:" } },
+    { id: "visto", rot: "Visto", ic: "passaporte", servico: { t: "Assessoria em visto", d: "Diga para qual país você precisa do visto. Orientamos os próximos passos.", m: "Olá! Preciso de assessoria em visto. País de destino:", link: "visto.html", btn: "Preencher solicitação de visto" } },
     { id: "carro", rot: "Aluguel de carro", ic: "carro", servico: { t: "Aluguel de carro", d: "Informe a cidade, as datas de retirada e devolução e o tipo de carro.", m: "Olá! Quero cotar aluguel de carro. Cidade e datas:" } }
   ];
 
@@ -74,8 +74,13 @@
       $("busca").hidden = true; $("busca-rodape").hidden = true; $("painel-servico").hidden = false;
       $("busca-titulo").textContent = a.servico.t;
       $("serv-titulo").textContent = a.servico.t; $("serv-texto").textContent = a.servico.d;
-      $("serv-zap").href = window.waLink(a.servico.m + " ");
-      $("serv-zap").target = "_blank"; $("serv-zap").rel = "noopener";
+      if (a.servico.link) {
+        $("serv-zap").href = a.servico.link; $("serv-zap").removeAttribute("target"); $("serv-zap").removeAttribute("rel");
+      } else {
+        $("serv-zap").href = window.waLink(a.servico.m + " ");
+        $("serv-zap").target = "_blank"; $("serv-zap").rel = "noopener";
+      }
+      $("serv-zap").textContent = a.servico.btn || "Pedir cotação pelo WhatsApp";
     } else {
       $("busca").hidden = false; $("busca-rodape").hidden = false; $("painel-servico").hidden = true;
       $("busca-titulo").textContent = a.titulo;
