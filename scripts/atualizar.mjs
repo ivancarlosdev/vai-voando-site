@@ -38,6 +38,8 @@ function extrairNoNavegador() {
 
   const pacotes = [];
   for (const p of lista) {
+    // Regra do site: pacote esgotado não sobe (e saída que já passou também não: veja o filtro de datas abaixo).
+    if (/esgotad/i.test(limpa(p.nome))) continue;
     const origens = [];
     for (const o of p.origens || []) {
       const saidas = saidasDe(o)

@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Site de pacotes da Vai Voando Morada do Sol, com atualização diária das ofertas",
   "scripts": {
-    "atualizar": "node scripts/atualizar.mjs"
+    "atualizar": "node scripts/atualizar.mjs",
+    "corridas": "node scripts/atualizar-corridas.mjs"
   },
   "dependencies": {
     "playwright": "^1.49.0",

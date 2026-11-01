@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turismo esportivo: pacotes para corridas | Vai Voando - Morada do Sol Viagens</title>
+<meta name="description" content="Pacotes de turismo esportivo para maratonas e meias maratonas no Brasil e no mundo: Nova York, Berlim, Chicago, Paris e mais. Fale com a Morada do Sol Viagens, em Araraquara.">
+<link rel="canonical" href="https://www.vaivoandomoradadosol.com.br/corridas.html">
+<meta name="theme-color" content="#000d2d">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Turismo esportivo | Vai Voando - Morada do Sol">
+<meta property="og:description" content="Pacotes para maratonas e meias maratonas no Brasil e no mundo.">
+<meta property="og:image" content="https://www.vaivoandomoradadosol.com.br/marca/compartilhar.jpg">
+<link rel="icon" type="image/png" href="marca/favicon.png">
+<link rel="apple-touch-icon" href="marca/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body data-pagina="corridas">
+<header id="topo"></header>
+<main>
+  <section class="pagina-topo">
+    <div class="cx topo-corrida">
+      <div>
+        <h1>Turismo esportivo</h1>
+        <p class="script">Corra o mundo com a gente.</p>
+        <p class="lede">Pacotes para maratonas e meias maratonas no Brasil e no exterior, com hospedagem e a organização da sua viagem. A gente cuida da logística, e você cuida do treino.</p>
+      </div>
+      <div class="arte-topo" id="arte-topo" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <div class="cx conteudo">
+    <form class="filtros-corrida" id="filtros" role="search" aria-label="Filtrar corridas" onsubmit="return false">
+      <label class="f-busca">Buscar<input type="search" id="f-busca" placeholder="Corrida, cidade ou país" autocomplete="off"></label>
+      <label>País<select id="f-pais"><option value="">Todos</option></select></label>
+      <label>Distância<select id="f-dist">
+        <option value="">Todas</option><option value="5">5K</option><option value="10">10K</option><option value="21">21K (meia maratona)</option><option value="42">42K (maratona)</option>
+      </select></label>
+      <label>Período<select id="f-mes"><option value="">Todos</option></select></label>
+      <button class="link-limpar" type="button" id="f-limpar" hidden>Limpar filtros</button>
+    </form>
+
+    <div class="res-barra"><h2 id="contagem">Corridas</h2><p class="aviso-carga" id="atualizado" style="margin:0"></p></div>
+    <p class="aviso-carga" id="aviso-vazio" hidden>Nenhuma corrida encontrada com esses filtros. Fale com a gente pelo WhatsApp, que montamos o pacote da corrida que você quer.</p>
+    <div class="grade" id="lista" aria-live="polite"></div>
+    <button class="btn-borda mais" id="mais" type="button" hidden>Mostrar mais corridas</button>
+
+    <section class="chamada">
+      <div><h2>Não achou a sua corrida?</h2><p class="script">A gente monta o pacote para você.</p></div>
+      <div class="acoes">
+        <a class="btn-zap" data-wa="Olá! Quero um pacote de turismo esportivo para uma corrida." data-wa-num="0" href="#">WhatsApp <span data-zap-texto="0"></span></a>
+      </div>
+    </section>
+
+    <p class="tec-nota">Valores por pessoa, na moeda e na condição de cada parceira (por exemplo, apartamento duplo), sujeitos a disponibilidade, câmbio e taxas. O valor final e as condições são confirmados no atendimento.</p>
+  </div>
+</main>
+<footer class="rodape" id="rodape"></footer>
+<script src="config.js"></script>
+<script src="layout.js"></script>
+<script src="arte.js"></script>
+<script src="corridas.js"></script>
+</body>
+</html>

@@ -33,6 +33,11 @@ jobs:
       - name: Ler as ofertas do portal
         run: node scripts/atualizar.mjs
 
+      - name: Ler as corridas (turismo esportivo)
+        # Se falhar, não impede a atualização das ofertas: o site mantém as corridas anteriores.
+        continue-on-error: true
+        run: node scripts/atualizar-corridas.mjs
+
       - name: Salvar as mudanças
         run: |
           git config user.name "Robô Vai Voando"

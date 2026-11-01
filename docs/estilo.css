@@ -360,3 +360,25 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 .logos li { background: #fff; border: 1px solid var(--linha); border-radius: 14px; height: 92px; display: grid; place-items: center; padding: 12px 16px; }
 .logos img { max-width: 100%; max-height: 64px; width: auto; height: auto; object-fit: contain; display: block; }
 @media (max-width: 860px) { .hist-linha { grid-template-columns: 1fr; } }
+
+/* ---------- Turismo esportivo (corridas.html) ---------- */
+.topo-corrida { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 28px; align-items: center; }
+.arte-topo { border-radius: 22px; overflow: hidden; border: 5px solid var(--ouro); box-shadow: 0 18px 40px rgba(0, 0, 0, .35); aspect-ratio: 16 / 10; }
+.arte-topo svg { display: block; width: 100%; height: 100%; }
+.filtros-corrida { display: grid; grid-template-columns: 2fr repeat(3, minmax(0, 1fr)); gap: 12px; align-items: end; background: var(--fundo-2); border-radius: var(--raio); padding: 16px; }
+.filtros-corrida label { display: grid; gap: 4px; font: 800 .78rem var(--f-titulo); color: var(--marinho); min-width: 0; }
+.filtros-corrida input, .filtros-corrida select { width: 100%; border: 1px solid var(--linha); border-radius: 10px; background: #fff; padding: 10px 12px; font: 600 .95rem var(--f-corpo); color: var(--tinta); min-width: 0; }
+.filtros-corrida .link-limpar { grid-column: 1 / -1; justify-self: start; color: var(--petroleo); }
+.desc-corrida { margin: 0 0 10px; color: var(--suave); font-size: .9rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.fonte-corrida { margin: 10px 0 0; font-size: .78rem; color: var(--suave); }
+.fonte-corrida a { color: var(--petroleo); }
+.cartao.esgotada .foto { filter: grayscale(.6); }
+.foto .etiqueta.esg { background: var(--magenta); color: #fff; }
+@media (max-width: 860px) {
+  .topo-corrida { grid-template-columns: 1fr; }
+  .filtros-corrida { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filtros-corrida .f-busca { grid-column: 1 / -1; }
+}
+
+.nao-inclui-t { margin: 10px 0 4px; font: 800 .8rem var(--f-titulo); color: var(--suave); }
+.inclui.nao li::marker { color: var(--magenta); }
