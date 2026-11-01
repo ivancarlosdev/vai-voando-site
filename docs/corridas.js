@@ -25,7 +25,10 @@
     var msg = c.esgotado
       ? 'Olá! Vi no site que a corrida "' + c.nome + '" está esgotada. Quero entrar na lista de espera ou saber de outras opções.'
       : 'Olá! Vi no site a corrida "' + c.nome + '" (' + dataBr(c.data) + ") e quero saber mais sobre o pacote de turismo esportivo.";
-    var inc = (c.inclui && c.inclui.length) || (c.hoteis && c.hoteis.length) || (c.naoInclui && c.naoInclui.length)
+    // "O que está incluso" desativado nas corridas (MOSTRAR_INCLUSO = false). Para voltar, troque para true
+    // e ligue LER_INCLUSO em scripts/atualizar-corridas.mjs.
+    var MOSTRAR_INCLUSO = false;
+    var inc = MOSTRAR_INCLUSO && ((c.inclui && c.inclui.length) || (c.hoteis && c.hoteis.length) || (c.naoInclui && c.naoInclui.length))
       ? "<details><summary>Hotéis e o que está incluso</summary>" +
         (c.hoteis && c.hoteis.length ? '<div class="hoteis">' + c.hoteis.map(function (h) { return '<div class="hotel"><b>' + esc(h) + "</b></div>"; }).join("") + "</div>" : "") +
         (c.inclui && c.inclui.length ? '<ul class="inclui">' + c.inclui.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +

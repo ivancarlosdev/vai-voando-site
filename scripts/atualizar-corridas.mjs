@@ -17,6 +17,22 @@ const PASTA = path.resolve("docs");
 const ARQUIVO = path.join(PASTA, "corridas.json");
 const UA = "Mozilla/5.0 (compatible; VaiVoandoMoradaDoSol/1.0; +https://www.vaivoandomoradadosol.com.br)";
 const PAUSA = 400; // educação com os servidores das parceiras
+// O site não mostra mais "o que está incluso" nas corridas. Para voltar a ler e mostrar, troque para true
+// (e reative o bloco "Hotéis e o que está incluso" em docs/corridas.js).
+const LER_INCLUSO = false;
+
+// Fotos escolhidas por nós: valem no lugar da imagem da parceira. Primeira regra que casar vence.
+// O texto comparado é "nome país", sem acentos e em minúsculas.
+const FOTOS = [
+  [/meia.*berlim|berlin.*half/, "img/corridas/fixas/berlim-meia.webp"],
+  [/berlin|berlim/, "img/corridas/fixas/berlim.webp"],
+  [/new york|nova york|\bnyc\b/, "img/corridas/fixas/nova-york.webp"],
+  [/maratona de sao paulo/, "img/corridas/fixas/sao-paulo.webp"],
+  [/belgrad/, "img/corridas/fixas/belgrado.webp"],
+  [/\bcali\b/, "img/corridas/fixas/cali.webp"],
+  [/mendoza/, "img/corridas/fixas/mendoza.webp"],
+  [/santiago/, "img/corridas/fixas/santiago.webp"],
+];
 
 const FONTES = {
   sub4: { nome: "Sub4 Turismo Esportivo", site: "https://www.sub4.com.br/" },
@@ -145,8 +161,8 @@ async function lerSub4(page) {
           return await page.evaluate(() => { const m = /\nVIDEOS\s*\n([\s\S]*?)(?:\n-\n\s*\(\d{2}\)|\ncontato@|$)/i.exec(document.body.innerText); return m ? m[1] : ""; });
         } catch { return ""; }
       };
-      const inclui = linhas(await lerAba(/inclu/i));
-      const hoteis = linhas(await lerAba(/hotei/i), 6);
+      const inclui = LER_INCLUSO ? linhas(await lerAba(/inclu/i)) : [];
+      const hoteis = LER_INCLUSO ? linhas(await lerAba(/hotei/i), 6) : [];
       const id = (/produtodetalhe\/(\d+)/.exec(url) || [])[1];
       saida.push({
         id: "sub4-" + id, fonte: "sub4", nome: bonito(d.titulo), data: paraData(d.data), dataTexto: limpa(d.data),
@@ -206,7 +222,7 @@ async function lerTravelRun(page) {
         id: "travelrun-" + id, fonte: "travelrun", nome: bonito(limpa(d.titulo).replace(/\s*\(?esgotado\)?/i, "")), data: paraData(d.data), dataTexto: limpa(d.data) + (d.largada ? " às " + limpa(d.largada).replace(/\s*hs?$/i, "h") : ""),
         pais: partes.length > 1 ? pais(partes[partes.length - 1]) : "", local: partes[0] || "", distancias: distancias(d.dist, d.titulo), tipo: "Corrida de rua", categoria: /\/(-?de-42k|inicio)\//.test(url) ? "" : "",
         preco: d.valor ? { moeda: d.moeda === "$" ? "US$" : d.moeda, valor: dinheiro(d.valor), rotulo: "a partir de", obs: limpa(d.obs).split(/Monte seu|Quero ir|Quer ir|Descri[cç]/i)[0].trim().replace(/^p\//i, "por ").replace(/^P\/ Pessoa/i, "por pessoa") } : null,
-        esgotado, descricao: resumo(d.descricao), inclui: linhas(d.incluso), hoteis: [], naoInclui: [], link: url, imagemOrigem: d.imagem,
+        esgotado, descricao: resumo(d.descricao), inclui: LER_INCLUSO ? linhas(d.incluso) : [], hoteis: [], naoInclui: [], link: url, imagemOrigem: d.imagem,
       });
     } catch (e) { console.warn("TravelRun: falha em", url, e.message); }
   }
@@ -250,7 +266,7 @@ async function lerTravelMarathon(page) {
         id: "travelmarathon-" + href.split("/").filter(Boolean).pop(), fonte: "travelmarathon", nome: bonito(limpa(d.titulo).replace(/&#8211;/g, "–")), data: dataIso,
         dataTexto: limpa(d.data) || dataIso.split("-").reverse().join("/"), pais: paisDoNome(d.titulo), local: limpa(d.local), distancias: distancias(txt, d.titulo),
         tipo: /marathon majors|wmm/i.test(txt) ? "World Marathon Majors" : "Corrida de rua", categoria: /superhalfs/i.test(txt) ? "SuperHalfs" : "",
-        preco: null, esgotado: /esgotad/i.test(txt), descricao: resumo(d.descricao), inclui: linhas(d.inc), hoteis: [], naoInclui: linhas(d.nao, 10), link: href, imagemOrigem: d.imagem,
+        preco: null, esgotado: /esgotad/i.test(txt), descricao: resumo(d.descricao), inclui: LER_INCLUSO ? linhas(d.inc) : [], hoteis: [], naoInclui: LER_INCLUSO ? linhas(d.nao, 10) : [], link: href, imagemOrigem: d.imagem,
       });
     } catch (e) { console.warn("Travel Marathon: falha em", href, e.message); }
   }
@@ -322,6 +338,12 @@ async function main() {
       todas = todas.concat(lidas);
     }
     if (!todas.length) throw new Error("Nenhuma corrida lida. Base anterior mantida.");
+    for (const c of todas) {
+      const alvo = semAcento(c.nome + " " + (c.pais || ""));
+      const f = FOTOS.find(([re]) => re.test(alvo));
+      if (f) c.imagem = f[1];
+      if (!LER_INCLUSO) { c.inclui = []; c.hoteis = []; c.naoInclui = []; }
+    }
     todas.sort((a, b) => a.data.localeCompare(b.data) || a.nome.localeCompare(b.nome));
     const saida = { geradoEm: new Date().toISOString(), fontes: FONTES, resumo, total: todas.length, corridas: todas };
     await mkdir(PASTA, { recursive: true });
