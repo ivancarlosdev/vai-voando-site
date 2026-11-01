@@ -42,18 +42,18 @@ window.AGENCIA = {
     titulo: "Gire e ganhe um presente",
     subtitulo: "Todo mundo ganha. Gire a roleta e resgate seu prêmio no WhatsApp.",
     validadeDias: 7,
-    segundosParaBotao: 8,
+    segundosParaBotao: 3,
     segundosMinimoParaSair: 6,
     premios: [
-      { id: "5", rotulo: "5%", titulo: "5% de desconto (até R$ 25)", chance: 99.985 },
-      { id: "10", rotulo: "10%", titulo: "10% de desconto (até R$ 50)", chance: 0.006 },
-      { id: "15", rotulo: "15%", titulo: "15% de desconto (até R$ 100)", chance: 0.003 },
+      { id: "5", rotulo: "5%", titulo: "5% de desconto", chance: 99.985 },
+      { id: "10", rotulo: "10%", titulo: "10% de desconto", chance: 0.006 },
+      { id: "15", rotulo: "15%", titulo: "15% de desconto", chance: 0.003 },
       { id: "mala", rotulo: "Mala", titulo: "Uma mala de viagem", chance: 0.003 },
       { id: "vale", rotulo: "Vale-viagem", titulo: "Vale-viagem de R$ 150", chance: 0.003 }
     ],
     fatias: ["5", "mala", "5", "10", "5", "vale", "15", "5"],
     regulamento: [
-      "Todo participante ganha um prêmio. A grande maioria dos giros resulta em 5% de desconto; 10%, 15%, mala de viagem e vale-viagem são prêmios raros.",
+      "Todo participante ganha um prêmio. O desconto de 5% é o mais frequente, e os prêmios maiores (10%, 15%, mala de viagem e vale-viagem) saem com menos frequência.",
       "Os descontos são aplicados sobre a tarifa do dia: 15% limitado a R$ 100; 10% limitado a R$ 50; 5% limitado a R$ 25. O vale-viagem é de até R$ 150.",
       "Os descontos não são acumulativos. Prêmio válido uma vez por CPF, com um giro por pessoa.",
       "O prêmio vale por 7 dias a partir do giro e precisa ser confirmado pela equipe da agência no WhatsApp, com o código recebido.",

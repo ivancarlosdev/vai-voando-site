@@ -62,7 +62,9 @@
     ".vr-premio{font:800 1.9rem var(--f-titulo,Montserrat,sans-serif);color:var(--magenta,#d40f57);margin:4px 0 6px}" +
     ".vr-reg{margin-top:12px;font-size:.76rem;color:var(--suave,#5b6785);text-align:left}" +
     ".vr-reg summary{cursor:pointer;font-weight:700}" +
-    "@media (prefers-reduced-motion:reduce){.vr-giro{transition-duration:.01s}}";
+    ".vr-fab{animation:vr-pulsa 2.6s ease-in-out 1s 3}" +
+    "@keyframes vr-pulsa{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}" +
+    "@media (prefers-reduced-motion:reduce){.vr-giro{transition-duration:.01s}.vr-fab{animation:none}}";
   document.head.appendChild(css);
 
   var fab = document.createElement("button");
@@ -156,6 +158,12 @@
   // O botão fixo aparece depois de alguns segundos; no computador, a roleta também abre uma vez por visita
   // quando o mouse sobe para fora da página (intenção de sair).
   setTimeout(atualizarFab, R.segundosParaBotao * 1000);
+  // Para testar: abra qualquer página do site com ?roleta no final do endereço (ex.: .../index.html?roleta).
+  // Isso apaga o giro guardado neste aparelho e abre a roleta na hora.
+  if (/[?&]roleta(=|&|$)/.test(location.search)) {
+    try { localStorage.removeItem(CHAVE); sessionStorage.removeItem(SESSAO); } catch (e) {}
+    setTimeout(abrir, 800);
+  }
   var entrada = Date.now();
   document.addEventListener("mouseout", function (e) {
     if (e.relatedTarget || e.clientY > 0 || !fundo.hidden || jaAbriu() || ler()) return;
