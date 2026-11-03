@@ -24,8 +24,8 @@ const LER_INCLUSO = false;
 // Trava de tempo: o GitHub cancela o trabalho inteiro depois de 20 minutos, e isso derrubaria também a atualização
 // das ofertas. Por isso a leitura das corridas tem orçamento próprio: passou do limite, para de ler, mantém as
 // corridas anteriores que ainda não foram relidas e segue. Quatro falhas seguidas numa fonte também a interrompem.
-const LIMITE_MS = 11 * 60_000;
-const t0 = Date.now();
+const LIMITE_MS = 4.5 * 60_000; // por fonte: uma fonte lenta não pode consumir o tempo das outras duas
+let t0 = Date.now();
 const estourou = () => Date.now() - t0 > LIMITE_MS;
 let parcial = false;
 let seguidas = 0;
@@ -149,7 +149,9 @@ async function lerSub4(page) {
   for (const [url, categoria] of achados) {
     if (estourou()) { parcial = true; console.warn("Sub4: tempo esgotado, leitura parcial"); break; }
     try {
-      await carregar(page, url, "text=/DATA:/");
+      await carregar(page, url, "body");
+      // (o seletor "text=/DATA:/" nunca casava e fazia cada página esperar 15 s à toa)
+      await page.waitForFunction(() => /DATA:/.test(document.body.innerText), null, { timeout: 15_000 }).catch(() => {});
       const d = await page.evaluate(() => {
         const t = document.body.innerText;
         const pega = (re) => (re.exec(t) || [])[1] || "";
@@ -324,8 +326,6 @@ async function main() {
   const browser = await chromium.launch();
   try {
     const context = await browser.newContext({ locale: "pt-BR", timezoneId: "America/Sao_Paulo", userAgent: UA });
-    // Imagens, fontes e vídeos das páginas não são necessários para ler o texto: bloquear deixa a leitura bem mais rápida.
-    await context.route("**/*", (rota) => (["image", "font", "media"].includes(rota.request().resourceType()) ? rota.abort() : rota.continue()));
     const page = await context.newPage();
     page.setDefaultTimeout(20_000);
     const anterior = await lerAnterior();
@@ -341,7 +341,7 @@ async function main() {
         continue;
       }
       let lidas = [];
-      parcial = false; seguidas = 0;
+      parcial = false; seguidas = 0; t0 = Date.now();
       try { lidas = await leitor(page); } catch (e) { console.warn(chave + ": erro geral:", e.message); }
       lidas = lidas.filter((c) => c.data && c.data >= hoje);
       const antigas = anterior ? anterior.corridas.filter((c) => c.fonte === chave) : [];
