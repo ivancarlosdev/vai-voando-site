@@ -21,6 +21,15 @@ const PAUSA = 400; // educação com os servidores das parceiras
 // (e reative o bloco "Hotéis e o que está incluso" em docs/corridas.js).
 const LER_INCLUSO = false;
 
+// Trava de tempo: o GitHub cancela o trabalho inteiro depois de 20 minutos, e isso derrubaria também a atualização
+// das ofertas. Por isso a leitura das corridas tem orçamento próprio: passou do limite, para de ler, mantém as
+// corridas anteriores que ainda não foram relidas e segue. Quatro falhas seguidas numa fonte também a interrompem.
+const LIMITE_MS = 11 * 60_000;
+const t0 = Date.now();
+const estourou = () => Date.now() - t0 > LIMITE_MS;
+let parcial = false;
+let seguidas = 0;
+
 // Fotos escolhidas por nós: valem no lugar da imagem da parceira. Primeira regra que casar vence.
 // O texto comparado é "nome país", sem acentos e em minúsculas.
 const FOTOS = [
@@ -115,9 +124,9 @@ function dinheiro(v) {
 }
 
 async function carregar(page, url, esperaSeletor) {
-  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-  if (esperaSeletor) await page.waitForSelector(esperaSeletor, { timeout: 25_000 }).catch(() => {});
-  else await page.waitForLoadState("load", { timeout: 25_000 }).catch(() => {});
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 40_000 });
+  if (esperaSeletor) await page.waitForSelector(esperaSeletor, { timeout: 15_000 }).catch(() => {});
+  else await page.waitForLoadState("load", { timeout: 8_000 }).catch(() => {});
   await dormir(PAUSA);
 }
 
@@ -138,6 +147,7 @@ async function lerSub4(page) {
 
   const saida = [];
   for (const [url, categoria] of achados) {
+    if (estourou()) { parcial = true; console.warn("Sub4: tempo esgotado, leitura parcial"); break; }
     try {
       await carregar(page, url, "text=/DATA:/");
       const d = await page.evaluate(() => {
@@ -170,7 +180,8 @@ async function lerSub4(page) {
         preco: d.preco ? { moeda: "R$", valor: dinheiro(d.preco), rotulo: "a partir de", obs: "" } : null,
         esgotado: d.esgotado, descricao: resumo(d.descricao), inclui, hoteis, naoInclui: [], link: url, imagemOrigem: d.imagem,
       });
-    } catch (e) { console.warn("Sub4: falha em", url, e.message); }
+      seguidas = 0;
+    } catch (e) { console.warn("Sub4: falha em", url, e.message); if (++seguidas >= 4) { parcial = true; console.warn("Sub4: 4 falhas seguidas, leitura interrompida"); break; } }
   }
   return saida;
 }
@@ -197,6 +208,7 @@ async function lerTravelRun(page) {
 
   const saida = [];
   for (const url of achados) {
+    if (estourou()) { parcial = true; console.warn("TravelRun: tempo esgotado, leitura parcial"); break; }
     try {
       await carregar(page, url);
       const d = await page.evaluate(() => {
@@ -224,7 +236,8 @@ async function lerTravelRun(page) {
         preco: d.valor ? { moeda: d.moeda === "$" ? "US$" : d.moeda, valor: dinheiro(d.valor), rotulo: "a partir de", obs: limpa(d.obs).split(/Monte seu|Quero ir|Quer ir|Descri[cç]/i)[0].trim().replace(/^p\//i, "por ").replace(/^P\/ Pessoa/i, "por pessoa") } : null,
         esgotado, descricao: resumo(d.descricao), inclui: LER_INCLUSO ? linhas(d.incluso) : [], hoteis: [], naoInclui: [], link: url, imagemOrigem: d.imagem,
       });
-    } catch (e) { console.warn("TravelRun: falha em", url, e.message); }
+      seguidas = 0;
+    } catch (e) { console.warn("TravelRun: falha em", url, e.message); if (++seguidas >= 4) { parcial = true; console.warn("TravelRun: 4 falhas seguidas, leitura interrompida"); break; } }
   }
   return saida;
 }
@@ -246,6 +259,7 @@ async function lerTravelMarathon(page) {
   });
   const saida = [];
   for (const { href, txt } of lista) {
+    if (estourou()) { parcial = true; console.warn("Travel Marathon: tempo esgotado, leitura parcial"); break; }
     try {
       await carregar(page, href);
       const d = await page.evaluate(() => {
@@ -268,7 +282,8 @@ async function lerTravelMarathon(page) {
         tipo: /marathon majors|wmm/i.test(txt) ? "World Marathon Majors" : "Corrida de rua", categoria: /superhalfs/i.test(txt) ? "SuperHalfs" : "",
         preco: null, esgotado: /esgotad/i.test(txt), descricao: resumo(d.descricao), inclui: LER_INCLUSO ? linhas(d.inc) : [], hoteis: [], naoInclui: LER_INCLUSO ? linhas(d.nao, 10) : [], link: href, imagemOrigem: d.imagem,
       });
-    } catch (e) { console.warn("Travel Marathon: falha em", href, e.message); }
+      seguidas = 0;
+    } catch (e) { console.warn("Travel Marathon: falha em", href, e.message); if (++seguidas >= 4) { parcial = true; console.warn("Travel Marathon: 4 falhas seguidas, leitura interrompida"); break; } }
   }
   return saida;
 }
@@ -309,7 +324,10 @@ async function main() {
   const browser = await chromium.launch();
   try {
     const context = await browser.newContext({ locale: "pt-BR", timezoneId: "America/Sao_Paulo", userAgent: UA });
+    // Imagens, fontes e vídeos das páginas não são necessários para ler o texto: bloquear deixa a leitura bem mais rápida.
+    await context.route("**/*", (rota) => (["image", "font", "media"].includes(rota.request().resourceType()) ? rota.abort() : rota.continue()));
     const page = await context.newPage();
+    page.setDefaultTimeout(20_000);
     const anterior = await lerAnterior();
     const hoje = new Date().toISOString().slice(0, 10);
     const leitores = { sub4: lerSub4, travelrun: lerTravelRun, travelmarathon: lerTravelMarathon };
@@ -323,17 +341,25 @@ async function main() {
         continue;
       }
       let lidas = [];
+      parcial = false; seguidas = 0;
       try { lidas = await leitor(page); } catch (e) { console.warn(chave + ": erro geral:", e.message); }
       lidas = lidas.filter((c) => c.data && c.data >= hoje);
       const antigas = anterior ? anterior.corridas.filter((c) => c.fonte === chave) : [];
       // Trava: leitura vazia ou muito menor que a anterior mantém a base boa dessa fonte.
-      if (!lidas.length || (antigas.length >= 4 && lidas.length < antigas.length * 0.5)) {
+      if (!lidas.length || (!parcial && antigas.length >= 4 && lidas.length < antigas.length * 0.5)) {
         console.warn(`${chave}: leitura suspeita (${lidas.length} agora, ${antigas.length} antes). Mantidas as anteriores.`);
         lidas = antigas.filter((c) => c.data >= hoje);
         resumo[chave] = { lidas: lidas.length, mantidas: true };
       } else {
         await prepararImagens(context, lidas);
-        resumo[chave] = { lidas: lidas.length, mantidas: false };
+        // Leitura parcial (acabou o tempo ou a fonte falhou): o que não foi relido hoje continua com os dados de antes.
+        if (parcial) {
+          const ids = new Set(lidas.map((c) => c.id));
+          const faltou = antigas.filter((c) => !ids.has(c.id) && c.data >= hoje);
+          lidas = lidas.concat(faltou);
+          console.warn(`${chave}: leitura parcial, ${faltou.length} corridas mantidas de antes`);
+        }
+        resumo[chave] = { lidas: lidas.length, mantidas: false, parcial };
       }
       todas = todas.concat(lidas);
     }

@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 1) Pacotes da Cativa. Roda sozinho: nada do que vem depois pode atrasar ou derrubar esta etapa.
   atualizar:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -33,11 +34,6 @@ jobs:
       - name: Ler as ofertas do portal
         run: node scripts/atualizar.mjs
 
-      - name: Ler as corridas (turismo esportivo)
-        # Se falhar, não impede a atualização das ofertas: o site mantém as corridas anteriores.
-        continue-on-error: true
-        run: node scripts/atualizar-corridas.mjs
-
       - name: Salvar as mudanças
         run: |
           git config user.name "Robô Vai Voando"
@@ -47,5 +43,43 @@ jobs:
             echo "Sem mudanças hoje."
           else
             git commit -m "Atualiza ofertas de $(date -u +%F)"
-            git push
+            for i in 1 2 3; do git pull --rebase origin main && git push && break || sleep 5; done
+          fi
+
+  # 2) Corridas (turismo esportivo). Roda depois, mesmo que a etapa 1 falhe, e tem tempo próprio:
+  #    se uma parceira demorar ou cair, só as corridas ficam como estavam; as ofertas já foram salvas.
+  corridas:
+    needs: atualizar
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar o navegador
+        run: npx playwright install --with-deps chromium
+
+      - name: Ler as corridas
+        timeout-minutes: 16
+        run: node scripts/atualizar-corridas.mjs
+
+      - name: Salvar as mudanças
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name "Robô Vai Voando"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "Sem mudanças hoje."
+          else
+            git commit -m "Atualiza corridas de $(date -u +%F)"
+            for i in 1 2 3; do git pull --rebase origin main && git push && break || sleep 5; done
           fi
