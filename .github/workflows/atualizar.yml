@@ -3,6 +3,9 @@ name: Atualizar ofertas
 on:
   schedule:
     - cron: "17 9 * * *" # todo dia, 06h17 no horário de Brasília
+    # Reserva: o GitHub às vezes atrasa muitas horas as execuções agendadas (em 03/11 a das 06h17 rodou só perto das 14h).
+    # Se a primeira já tiver rodado no horário, esta só refaz a leitura (sem prejuízo).
+    - cron: "47 10 * * *" # 07h47 no horário de Brasília
   workflow_dispatch: # permite rodar na hora pelo botão "Run workflow"
 
 permissions:

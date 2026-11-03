@@ -342,14 +342,20 @@ async function main() {
       }
       let lidas = [];
       parcial = false; seguidas = 0; t0 = Date.now();
+      // Guarda os avisos de cada fonte dentro do corridas.json (campo "resumo"), para dar para ver o motivo de uma
+      // falha no GitHub sem abrir o log da execução.
+      const avisos = [];
+      const warnOriginal = console.warn;
+      console.warn = (...a) => { avisos.push(a.join(" ").slice(0, 220)); warnOriginal(...a); };
       try { lidas = await leitor(page); } catch (e) { console.warn(chave + ": erro geral:", e.message); }
+      console.warn = warnOriginal;
       lidas = lidas.filter((c) => c.data && c.data >= hoje);
       const antigas = anterior ? anterior.corridas.filter((c) => c.fonte === chave) : [];
       // Trava: leitura vazia ou muito menor que a anterior mantém a base boa dessa fonte.
       if (!lidas.length || (!parcial && antigas.length >= 4 && lidas.length < antigas.length * 0.5)) {
         console.warn(`${chave}: leitura suspeita (${lidas.length} agora, ${antigas.length} antes). Mantidas as anteriores.`);
         lidas = antigas.filter((c) => c.data >= hoje);
-        resumo[chave] = { lidas: lidas.length, mantidas: true };
+        resumo[chave] = { lidas: lidas.length, mantidas: true, avisos: avisos.slice(0, 6) };
       } else {
         await prepararImagens(context, lidas);
         // Leitura parcial (acabou o tempo ou a fonte falhou): o que não foi relido hoje continua com os dados de antes.
@@ -359,7 +365,7 @@ async function main() {
           lidas = lidas.concat(faltou);
           console.warn(`${chave}: leitura parcial, ${faltou.length} corridas mantidas de antes`);
         }
-        resumo[chave] = { lidas: lidas.length, mantidas: false, parcial };
+        resumo[chave] = { lidas: lidas.length, mantidas: false, parcial, avisos: avisos.slice(0, 6) };
       }
       todas = todas.concat(lidas);
     }
