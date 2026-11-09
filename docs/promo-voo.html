@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promo Voo | Vai Voando - Morada do Sol</title>
+<meta name="description" content="Consulte passagens aéreas em promoção por aeroporto, destino, data e preço com a Vai Voando Morada do Sol.">
+<link rel="canonical" href="https://www.vaivoandomoradadosol.com.br/promo-voo.html">
+<meta name="theme-color" content="#000d2d">
+<link rel="icon" href="marca/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="promo-voo.css">
+</head>
+<body data-pagina="promo-voo">
+<header id="topo"></header>
+<main>
+  <section class="pagina-topo">
+    <div class="cx">
+      <h1>Promo Voo</h1>
+      <p class="script">Passagens aéreas em promoção</p>
+      <p class="lede">Busque por aeroporto, destino e data. A equipe da Vai Voando confirma a tarifa e a disponibilidade pelo WhatsApp.</p>
+    </div>
+  </section>
+  <div class="cx conteudo">
+    <form id="filtros" class="filtros-corrida filtros-voo" aria-label="Filtrar promoções de voo">
+      <label>Saindo de<input name="origem" list="origens" maxlength="80" placeholder="Cidade ou aeroporto"></label>
+      <label>Indo para<input name="destino" list="destinos" maxlength="80" placeholder="Cidade ou aeroporto"></label>
+      <label>Saídas a partir de<input name="inicio" type="date"></label>
+      <label>Saídas até<input name="fim" type="date"></label>
+      <label>Até R$ por pessoa<input name="preco" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Total com taxas"></label>
+      <div class="acoes">
+        <button class="btn-ouro" type="submit">Buscar voos</button>
+        <button class="btn-borda" type="reset">Limpar</button>
+      </div>
+      <datalist id="origens"></datalist>
+      <datalist id="destinos"></datalist>
+    </form>
+    <section class="secao" aria-labelledby="contagem">
+      <div class="res-barra">
+        <h2 id="contagem">Passagens em promoção</h2>
+        <label class="ordem">Ordenar por
+          <select id="ordem"><option value="preco">Menor total</option><option value="data">Saída mais próxima</option></select>
+        </label>
+      </div>
+      <p id="atualizado" class="aviso-carga" hidden></p>
+      <p id="status-voo" class="aviso-carga" role="status">Carregando ofertas…</p>
+      <div class="grade" id="lista"></div>
+      <button id="mais" class="btn-borda mais" type="button" hidden>Mostrar mais voos</button>
+      <p class="tec-nota">Valores por pessoa, sujeitos à confirmação da tarifa e à disponibilidade. O filtro por preço considera o total com taxas quando informado.</p>
+    </section>
+    <section class="chamada">
+      <div><h2>Quer que a gente procure seu voo?</h2><p>Preencha os filtros acima para enviar o trecho, as datas e o orçamento à nossa equipe.</p></div>
+      <a class="btn-zap" id="consulta" target="_blank" rel="noopener">Pedir cotação pelo WhatsApp</a>
+    </section>
+  </div>
+</main>
+<footer class="rodape" id="rodape"></footer>
+<script src="config.js"></script>
+<script src="layout.js"></script>
+<script type="module" src="promo-voo.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+name: Atualizar Promo Voo
+
+on:
+  schedule:
+    - cron: "37 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-promo-voo
+  cancel-in-progress: false
+
+jobs:
+  tarifas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/atualizar-promo-voo.mjs
+      - name: Publicar catálogo
+        run: |
+          git add docs/promo-voo.json.gz
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name="Robô Vai Voando" -c user.email="actions@users.noreply.github.com" commit -m "Atualiza catálogo Promo Voo"
+          for tentativa in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
