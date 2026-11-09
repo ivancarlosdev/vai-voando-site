@@ -56,19 +56,26 @@
   </section>
 
   <div class="cx">
-    <section class="banner" id="banner-promocoes" aria-label="Promoções em destaque">
-      <div>
-        <span class="selo-pre">Vai Voando &middot; Morada do Sol</span>
-        <h2>Viaje em até 12x no boleto</h2>
-        <p class="script">Seu destino, nossa paixão.</p>
-        <a class="btn-ouro" href="#pacotes">Ver pacotes</a>
+    <section class="banner" id="banner-promocoes" aria-labelledby="banner-titulo">
+      <div class="destaque-fotos" id="destaque-fotos" aria-hidden="true"></div>
+      <div class="banner-copy">
+        <span class="selo-pre" id="banner-selo">Vai Voando · Morada do Sol</span>
+        <h2 id="banner-titulo">Sua próxima viagem começa aqui</h2>
+        <p id="banner-texto">Encontre seu próximo destino e consulte as condições com a agência.</p>
+        <div class="banner-acoes">
+          <a class="btn-ouro" href="#pacotes">Ver pacotes</a>
+          <a class="banner-link" href="promo-voo.html">Ver Promo Voo <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
       <div class="destaque" id="destaque" hidden>
-        <div class="destaque-fotos" id="destaque-fotos" aria-hidden="true"></div>
+        <span class="destaque-legenda" id="destaque-legenda" hidden>Imagem ilustrativa gerada por IA</span>
         <div class="etq">
-          <small>Oferta em destaque</small>
+          <small>Pacote em destaque</small>
           <strong id="destaque-destino"></strong>
+          <p id="destaque-nome"></p>
           <b id="destaque-txt"></b>
+          <span class="destaque-nota">Por pessoa. Consulte taxas e disponibilidade.</span>
+          <a id="destaque-oferta" target="_blank" rel="noopener">Consultar pelo WhatsApp <span aria-hidden="true">↗</span></a>
         </div>
         <div class="destaque-ritmo" id="destaque-ritmo" hidden>
           <span class="destaque-trilho" aria-hidden="true"><span id="destaque-progresso"></span></span>

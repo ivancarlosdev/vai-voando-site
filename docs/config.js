@@ -62,3 +62,10 @@ window.AGENCIA = {
   },
   servicos: ["Aéreo", "Cruzeiros", "Hospedagem", "Rodoviário", "Assessoria em visto"]
 };
+
+// Campanha de novembro, conforme o calendário de Brasília.
+(function () {
+  var hoje = new Intl.DateTimeFormat("sv-SE", { timeZone: "America/Sao_Paulo" }).format(new Date());
+  if (hoje < "2026-11-08" || hoje > "2026-11-30") return;
+  window.CAMPANHA_VIAGEM = hoje < "2026-11-27" ? "Esquenta Black Friday" : "Black Friday";
+})();

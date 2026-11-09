@@ -3,6 +3,11 @@
   "use strict";
   var A = window.AGENCIA;
   var PAGINA = 24;
+  if (window.CAMPANHA_VIAGEM) {
+    $("banner-selo").textContent = "Vai Voando · Morada do Sol";
+    $("banner-titulo").textContent = window.CAMPANHA_VIAGEM;
+    $("banner-texto").textContent = "Pacotes e passagens para a sua próxima viagem. Confira as tarifas e fale com a nossa equipe.";
+  }
   var CATS = ["Nacional", "Internacional", "Evento"];
 
   var ICONES = {
@@ -127,21 +132,36 @@
   function opcao(v, t) { var o = document.createElement("option"); o.value = v; o.textContent = t; return o; }
 
   function destaque() {
+    var artes = [
+      { chave: "porto seguro", nome: "Porto Seguro", arquivo: "porto-seguro.jpg" },
+      { chave: "foz do iguacu", nome: "Foz do Iguaçu", arquivo: "foz-do-iguacu.jpg" },
+      { chave: "buenos aires", nome: "Buenos Aires", arquivo: "buenos-aires.jpg" },
+    ];
+    function arte(r) {
+      var nome = norm(r.p.destino).replace(/\s*\([a-z]{3}\)$/, "");
+      return artes.find(function (a) { return a.chave === nome; });
+    }
     var destinos = new Set();
     var promocoes = rows.filter(function (r) {
-      return Number.isFinite(r.preco) && r.preco > 0 && r.p.capa && r.p.nome;
-    }).sort(function (a, b) { return a.preco - b.preco; }).filter(function (r) {
-      var destino = norm(r.p.destino || r.p.nome);
+      return Number.isFinite(r.preco) && r.preco > 0 && (arte(r) || r.p.capa) && r.p.nome;
+    }).sort(function (a, b) { return Number(!!arte(b)) - Number(!!arte(a)) || a.preco - b.preco; }).filter(function (r) {
+      var imagem = arte(r);
+      var destino = imagem ? imagem.chave : norm(r.p.destino || r.p.nome);
       if (destinos.has(destino)) return false;
       destinos.add(destino);
       return true;
     }).slice(0, 6);
+    var campanhas = promocoes.filter(arte);
+    if (campanhas.length) promocoes = campanhas;
     if (!promocoes.length) return;
 
     var banner = $("banner-promocoes");
     var galeria = $("destaque-fotos");
     var texto = $("destaque-txt");
     var destino = $("destaque-destino");
+    var nome = $("destaque-nome");
+    var legenda = $("destaque-legenda");
+    var consulta = $("destaque-oferta");
     var pausa = $("destaque-pausa");
     var progresso = $("destaque-progresso");
     var movimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -150,12 +170,17 @@
     var temporizador;
     var animacao;
     var intervalo = 6000;
-    var fotos = promocoes.map(function (oferta) {
+    var fotos = promocoes.map(function (oferta, i) {
       var moldura = document.createElement("div");
       var foto = document.createElement("img");
       foto.alt = "";
       foto.decoding = "async";
-      foto.src = oferta.p.capa;
+      var imagem = arte(oferta);
+      foto.loading = i < 2 ? "eager" : "lazy";
+      if (imagem && oferta.p.capa) {
+        foto.addEventListener("error", function () { foto.src = oferta.p.capa; }, { once: true });
+      }
+      foto.src = imagem ? "img/black-friday/" + imagem.arquivo : oferta.p.capa;
       moldura.className = "destaque-foto";
       moldura.appendChild(foto);
       galeria.appendChild(moldura);
@@ -167,9 +192,14 @@
       fotos.forEach(function (foto, i) {
         foto.dataset.posicao = String((i - indice + fotos.length) % fotos.length);
       });
-      destino.textContent = bonito(oferta.p.destino || oferta.p.nome);
-      texto.textContent = (oferta.o.parcela || "A partir de R$ " + brl(oferta.preco) + " por parcela") +
-        " · " + bonito(oferta.p.nome);
+      var imagem = arte(oferta);
+      destino.textContent = imagem ? imagem.nome : bonito(oferta.p.destino || oferta.p.nome);
+      nome.textContent = bonito(oferta.p.nome);
+      legenda.hidden = !imagem;
+      texto.textContent = oferta.o.parcela || "A partir de R$ " + brl(oferta.preco) + " por parcela";
+      consulta.href = window.waLink("Olá! Quero consultar o pacote " + oferta.p.nome +
+        (oferta.o.cidade ? ", saindo de " + oferta.o.cidade : "") +
+        ", que vi no destaque do site. Podem confirmar valores, taxas e disponibilidade?");
     }
 
     function agendar() {
