@@ -410,3 +410,65 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 
 .nao-inclui-t { margin: 10px 0 4px; font: 800 .8rem var(--f-titulo); color: var(--suave); }
 .inclui.nao li::marker { color: var(--magenta); }
+
+/* Identidade da campanha, ativada pelo calendário em config.js. */
+body.campanha-black {
+  --marinho: #160c27;
+  --marinho-2: #291442;
+  --ouro: #ffe65b;
+  --magenta: #8b3fc1;
+  --petroleo: #68369b;
+  --fundo: #faf7fd;
+  --fundo-2: #f0e8f8;
+  --tinta: #211330;
+  --suave: #62516f;
+  --linha: #e3d5ed;
+  --sombra: 0 12px 28px #28114019;
+  --black-fundo: radial-gradient(120% 170% at 100% 0%, #583087 0%, transparent 62%), #160c27;
+}
+.campanha-black .faixa {
+  background: linear-gradient(90deg, #5d2b93, #ab68ed 45%, var(--ouro));
+}
+.campanha-black .faixa i { background: transparent; }
+.campanha-black :is(.pagina-topo, .chamada, .cartao-azul, .rodape) { background: var(--black-fundo); }
+.campanha-black :is(.pagina-topo h1, .chamada h2, .rodape h3) { color: var(--ouro); }
+.campanha-black .pagina-topo { border-bottom: 3px solid var(--ouro); }
+.campanha-black .rodape { border-top: 3px solid var(--ouro); }
+.campanha-black .rodape :is(p, a, li, small) { color: #eee5f9; }
+.campanha-black .secao-cab h2::before,
+.campanha-black .res-barra h2::before {
+  content: "";
+  display: inline-block;
+  width: .24em;
+  height: .75em;
+  margin-right: .35em;
+  border-radius: 3px;
+  background: #8541b8;
+}
+.campanha-black :is(.pagto, .grade-servicos li, .form-visto, .mapa-cartao, .insta) {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+}
+.campanha-black .insta { padding: clamp(14px, 3vw, 26px); }
+.campanha-black :is(.pagto, .form-visto, .cartao-info) { border-top: 3px solid #a968d9; }
+.campanha-black :is(.pagto .ic, .atalho .ic) { background: #68369b; }
+.campanha-black .atalho:nth-child(2) .ic { background: var(--zap); }
+.campanha-black :is(.atalho, .cartao) {
+  --tinta: #fff;
+  --suave: #e0d3ec;
+  --linha: #ffffff36;
+  --fundo-2: #39234e;
+  --petroleo: #eed6ff;
+  color: var(--tinta);
+  background: linear-gradient(145deg, #281441, #170d27);
+}
+.campanha-black :is(.atalho:hover, .cartao:hover) { border-color: var(--ouro); }
+.campanha-black .cartao .preco .val { color: var(--ouro); }
+.campanha-black .cartao .aviso-data { color: #442c06; }
+.campanha-black .cartao .foto { background: linear-gradient(135deg, #513077, #160c27); }
+.campanha-black :is(.filtros-corrida, .avaliacoes, .cartao-info) { border: 1px solid var(--linha); }
+.campanha-black :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid #ac69e9;
+  outline-offset: 3px;
+}
