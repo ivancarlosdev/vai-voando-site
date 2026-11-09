@@ -139,57 +139,71 @@
     if (!promocoes.length) return;
 
     var banner = $("banner-promocoes");
-    var foto = $("destaque-img");
+    var galeria = $("destaque-fotos");
     var texto = $("destaque-txt");
+    var destino = $("destaque-destino");
     var pausa = $("destaque-pausa");
+    var progresso = $("destaque-progresso");
     var movimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
     var pausado = movimentoReduzido.matches;
     var indice = 0;
     var temporizador;
+    var animacao;
+    var intervalo = 6000;
+    var fotos = promocoes.map(function (oferta) {
+      var moldura = document.createElement("div");
+      var foto = document.createElement("img");
+      foto.alt = "";
+      foto.decoding = "async";
+      foto.src = oferta.p.capa;
+      moldura.className = "destaque-foto";
+      moldura.appendChild(foto);
+      galeria.appendChild(moldura);
+      return moldura;
+    });
 
     function mostrar() {
       var oferta = promocoes[indice];
-      foto.src = oferta.p.capa;
+      fotos.forEach(function (foto, i) {
+        foto.dataset.posicao = String((i - indice + fotos.length) % fotos.length);
+      });
+      destino.textContent = bonito(oferta.p.destino || oferta.p.nome);
       texto.textContent = (oferta.o.parcela || "A partir de R$ " + brl(oferta.preco) + " por parcela") +
         " · " + bonito(oferta.p.nome);
     }
 
     function agendar() {
       clearTimeout(temporizador);
+      if (animacao) animacao.cancel();
       if (pausado || document.hidden || banner.matches(":focus-within") ||
-          (window.matchMedia("(hover: hover)").matches && banner.matches(":hover"))) return;
+          (window.matchMedia("(hover: hover)").matches && galeria.matches(":hover"))) return;
+      if (!movimentoReduzido.matches) {
+        animacao = progresso.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], intervalo);
+      }
       temporizador = setTimeout(function () {
         indice = (indice + 1) % promocoes.length;
         mostrar();
         agendar();
-      }, 6000);
-    }
-
-    function mudar(direcao) {
-      indice = (indice + direcao + promocoes.length) % promocoes.length;
-      mostrar();
-      $("destaque-status").textContent = "Promoção " + (indice + 1) + " de " + promocoes.length + ". " + texto.textContent;
-      agendar();
+      }, intervalo);
     }
 
     function atualizarPausa() {
-      pausa.textContent = pausado ? "Reproduzir" : "Pausar";
+      pausa.setAttribute("aria-label", pausado ? "Retomar promoções automáticas" : "Pausar promoções automáticas");
+      pausa.textContent = pausado ? "▶" : "Ⅱ";
       agendar();
     }
 
     mostrar();
     $("destaque").hidden = false;
     if (promocoes.length < 2) return;
-    $("destaque-controles").hidden = false;
-    $("destaque-anterior").addEventListener("click", function () { mudar(-1); });
-    $("destaque-proximo").addEventListener("click", function () { mudar(1); });
+    $("destaque-ritmo").hidden = false;
     pausa.addEventListener("click", function () {
       pausado = !pausado;
       atualizarPausa();
     });
-    ["mouseenter", "mouseleave", "focusin"].forEach(function (evento) {
-      banner.addEventListener(evento, agendar);
-    });
+    galeria.addEventListener("mouseenter", agendar);
+    galeria.addEventListener("mouseleave", agendar);
+    banner.addEventListener("focusin", agendar);
     banner.addEventListener("focusout", function () { setTimeout(agendar, 0); });
     document.addEventListener("visibilitychange", agendar);
     movimentoReduzido.addEventListener("change", function (evento) {
