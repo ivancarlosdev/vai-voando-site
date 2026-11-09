@@ -97,6 +97,9 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 .banner .selo-pre { font: 800 .78rem var(--f-titulo); letter-spacing: .16em; text-transform: uppercase; color: var(--ouro); }
 .banner h2 { font-size: clamp(1.9rem, 4.2vw, 3rem); margin: 10px 0 8px; letter-spacing: -.02em; }
 .banner .script { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 0 0 22px; }
+.destaque-controles { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.destaque-controles button { min-width: 40px; min-height: 40px; padding: 6px 12px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 999px; background: transparent; color: #fff; font: 700 .85rem var(--f-titulo); cursor: pointer; }
+.destaque-controles button:hover, .destaque-controles button:focus-visible { background: rgba(255, 255, 255, .16); }
 .destaque { justify-self: center; position: relative; width: min(360px, 78vw); aspect-ratio: 1; }
 .destaque .circulo { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 6px solid var(--ouro); background: var(--petroleo); box-shadow: 0 18px 40px rgba(0, 0, 0, .35); }
 .destaque img { width: 100%; height: 100%; object-fit: cover; }
