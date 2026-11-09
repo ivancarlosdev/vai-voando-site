@@ -121,18 +121,84 @@
       el.d.appendChild(g);
     });
 
-    destaque();
+    if (!dados.exemplo) destaque();
     render();
   }
   function opcao(v, t) { var o = document.createElement("option"); o.value = v; o.textContent = t; return o; }
 
   function destaque() {
-    var melhor = null;
-    rows.forEach(function (r) { if (r.preco != null && r.p.capa && (!melhor || r.preco < melhor.preco)) melhor = r; });
-    if (!melhor) return;
-    $("destaque-img").src = melhor.p.capa;
-    $("destaque-txt").textContent = (melhor.o.parcela || "") + (melhor.o.parcela ? " · " : "") + bonito(melhor.p.nome.split(/ [-–(] /)[0]);
+    var destinos = new Set();
+    var promocoes = rows.filter(function (r) {
+      return Number.isFinite(r.preco) && r.preco > 0 && r.p.capa && r.p.nome;
+    }).sort(function (a, b) { return a.preco - b.preco; }).filter(function (r) {
+      var destino = norm(r.p.destino || r.p.nome);
+      if (destinos.has(destino)) return false;
+      destinos.add(destino);
+      return true;
+    }).slice(0, 6);
+    if (!promocoes.length) return;
+
+    var banner = $("banner-promocoes");
+    var foto = $("destaque-img");
+    var texto = $("destaque-txt");
+    var pausa = $("destaque-pausa");
+    var movimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var pausado = movimentoReduzido.matches;
+    var indice = 0;
+    var temporizador;
+
+    function mostrar() {
+      var oferta = promocoes[indice];
+      foto.src = oferta.p.capa;
+      texto.textContent = (oferta.o.parcela || "A partir de R$ " + brl(oferta.preco) + " por parcela") +
+        " · " + bonito(oferta.p.nome);
+    }
+
+    function agendar() {
+      clearTimeout(temporizador);
+      if (pausado || document.hidden || banner.matches(":focus-within") ||
+          (window.matchMedia("(hover: hover)").matches && banner.matches(":hover"))) return;
+      temporizador = setTimeout(function () {
+        indice = (indice + 1) % promocoes.length;
+        mostrar();
+        agendar();
+      }, 6000);
+    }
+
+    function mudar(direcao) {
+      indice = (indice + direcao + promocoes.length) % promocoes.length;
+      mostrar();
+      $("destaque-status").textContent = "Promoção " + (indice + 1) + " de " + promocoes.length + ". " + texto.textContent;
+      agendar();
+    }
+
+    function atualizarPausa() {
+      pausa.textContent = pausado ? "Reproduzir" : "Pausar";
+      agendar();
+    }
+
+    mostrar();
     $("destaque").hidden = false;
+    if (promocoes.length < 2) return;
+    $("destaque-controles").hidden = false;
+    $("destaque-anterior").addEventListener("click", function () { mudar(-1); });
+    $("destaque-proximo").addEventListener("click", function () { mudar(1); });
+    pausa.addEventListener("click", function () {
+      pausado = !pausado;
+      atualizarPausa();
+    });
+    ["mouseenter", "mouseleave", "focusin"].forEach(function (evento) {
+      banner.addEventListener(evento, agendar);
+    });
+    banner.addEventListener("focusout", function () { setTimeout(agendar, 0); });
+    document.addEventListener("visibilitychange", agendar);
+    movimentoReduzido.addEventListener("change", function (evento) {
+      if (evento.matches) {
+        pausado = true;
+        atualizarPausa();
+      }
+    });
+    atualizarPausa();
   }
 
   // ---------- filtros ----------

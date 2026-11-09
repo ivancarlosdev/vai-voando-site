@@ -56,16 +56,22 @@
   </section>
 
   <div class="cx">
-    <section class="banner" aria-label="Destaque">
+    <section class="banner" id="banner-promocoes" aria-label="Promoções em destaque">
       <div>
         <span class="selo-pre">Vai Voando &middot; Morada do Sol</span>
         <h2>Viaje em até 12x no boleto</h2>
         <p class="script">Seu destino, nossa paixão.</p>
         <a class="btn-ouro" href="#pacotes">Ver pacotes</a>
+        <div class="destaque-controles" id="destaque-controles" role="group" aria-label="Controles das promoções" hidden>
+          <button id="destaque-anterior" type="button" aria-label="Promoção anterior">‹</button>
+          <button id="destaque-pausa" type="button">Pausar</button>
+          <button id="destaque-proximo" type="button" aria-label="Próxima promoção">›</button>
+        </div>
+        <p id="destaque-status" class="so-leitor" role="status"></p>
       </div>
       <div class="destaque" id="destaque" hidden>
         <div class="circulo"><img id="destaque-img" alt="" width="360" height="360"></div>
-        <div class="etq"><small id="destaque-rot">Menor preço hoje</small><b id="destaque-txt"></b></div>
+        <div class="etq"><small>Oferta em destaque</small><b id="destaque-txt"></b></div>
       </div>
     </section>
 
