@@ -51,3 +51,15 @@
   .voo-trechos, .voo-preco { grid-column: auto; grid-row: auto; }
   .voo-preco { text-align: left; border-top: 1px solid var(--linha); padding-top: 8px; }
 }
+
+.campanha-black .voo-resultados { border: 1px solid var(--linha); }
+.campanha-black .voo-card {
+  --marinho: #fff;
+  --suave: #e0d3ec;
+  --linha: #ffffff36;
+  --petroleo: #eed6ff;
+  color: #fff;
+  background: linear-gradient(145deg, #281441, #170d27);
+}
+.campanha-black .voo-card:hover { border-color: var(--ouro); }
+.campanha-black .voo-preco strong { color: var(--ouro); }
