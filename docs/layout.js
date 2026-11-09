@@ -55,7 +55,16 @@
     '<div class="cx rodape-nota"><p>Tarifas por pessoa, sujeitas a disponibilidade no momento da reserva. Os valores não incluem taxas de embarque. Confirme o prazo de emissão e as condições de pagamento com a agência. Pacotes operados pela Cativa Operadora e vendidos pela ' + esc(A.nome) + ".</p>" +
     "<p>&copy; " + new Date().getFullYear() + " " + esc(A.nome) + ". Todos os direitos reservados.</p></div>";
 
-  var t = document.getElementById("topo"); if (t) t.innerHTML = topo;
+  var t = document.getElementById("topo");
+  if (t) {
+    if (window.CAMPANHA_VIAGEM) {
+      document.body.classList.add("campanha-black");
+      topo = '<a class="faixa-black" href="' + (atual === "inicio" ? "" : "index.html") +
+        '#banner-promocoes"><strong>' + esc(window.CAMPANHA_VIAGEM) +
+        ' Vai Voando</strong><span>Confira as ofertas <span aria-hidden="true">↗</span></span></a>' + topo;
+    }
+    t.innerHTML = topo;
+  }
   var r = document.getElementById("rodape"); if (r) r.innerHTML = rodape;
 
   var hamb = document.getElementById("hamb"), menu = document.getElementById("menu");
