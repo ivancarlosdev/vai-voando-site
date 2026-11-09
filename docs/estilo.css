@@ -97,15 +97,23 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 .banner .selo-pre { font: 800 .78rem var(--f-titulo); letter-spacing: .16em; text-transform: uppercase; color: var(--ouro); }
 .banner h2 { font-size: clamp(1.9rem, 4.2vw, 3rem); margin: 10px 0 8px; letter-spacing: -.02em; }
 .banner .script { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 0 0 22px; }
-.destaque-controles { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
-.destaque-controles button { min-width: 40px; min-height: 40px; padding: 6px 12px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 999px; background: transparent; color: #fff; font: 700 .85rem var(--f-titulo); cursor: pointer; }
-.destaque-controles button:hover, .destaque-controles button:focus-visible { background: rgba(255, 255, 255, .16); }
-.destaque { justify-self: center; position: relative; width: min(360px, 78vw); aspect-ratio: 1; }
-.destaque .circulo { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 6px solid var(--ouro); background: var(--petroleo); box-shadow: 0 18px 40px rgba(0, 0, 0, .35); }
-.destaque img { width: 100%; height: 100%; object-fit: cover; }
-.destaque .etq { position: absolute; left: -6px; bottom: 6%; background: #fff; color: var(--tinta); border-radius: 16px; padding: 10px 16px; box-shadow: var(--sombra); display: grid; line-height: 1.2; }
-.destaque .etq small { font: 700 .72rem var(--f-titulo); color: var(--suave); text-transform: uppercase; letter-spacing: .06em; }
-.destaque .etq b { font: 800 1.15rem var(--f-titulo); }
+.destaque { justify-self: center; position: relative; isolation: isolate; width: min(100%, 520px); min-width: 0; aspect-ratio: 1.35; }
+.destaque-fotos { position: absolute; inset: 0; }
+.destaque-foto { position: absolute; inset: 8% 20% 15% 8%; overflow: hidden; border: 3px solid rgba(255,255,255,.82); border-radius: 18px; background: var(--petroleo); box-shadow: 0 16px 32px #0007; opacity: 0; transform: translate(-14%, 7%) rotate(-12deg) scale(.8); transition: transform .85s cubic-bezier(.2,.8,.25,1), opacity .5s, filter .65s; }
+.destaque-foto img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.destaque-foto[data-posicao="0"] { z-index: 3; opacity: 1; transform: rotate(-4deg); border-color: var(--ouro); }
+.destaque-foto[data-posicao="1"] { z-index: 2; opacity: 1; transform: translate(23%, -7%) rotate(12deg) scale(.82); filter: brightness(.78) saturate(.9); }
+.destaque-foto[data-posicao="2"] { z-index: 1; opacity: 1; transform: translate(-18%, 6%) rotate(-13deg) scale(.75); filter: brightness(.69) saturate(.85); }
+.destaque .etq { position: absolute; z-index: 4; bottom: 5%; right: 1%; width: min(84%, 365px); background: rgba(3, 16, 48, .94); border: 1px solid #ffffff54; border-left: 4px solid var(--ouro); color: #fff; border-radius: 15px; padding: 10px 14px; box-shadow: 0 10px 22px #0005; display: grid; gap: 3px; line-height: 1.2; }
+.destaque .etq small { font: 800 .67rem var(--f-titulo); color: var(--ouro); text-transform: uppercase; letter-spacing: .1em; }
+.destaque .etq strong { font: 800 clamp(1.12rem, 2.5vw, 1.65rem) var(--f-titulo); }
+.destaque .etq b { font-size: .86rem; color: #e0e9ff; }
+.destaque-ritmo { position: absolute; z-index: 5; right: 1%; bottom: -34px; display: flex; align-items: center; gap: 6px; }
+.destaque-trilho { display: block; width: 46px; height: 2px; overflow: hidden; background: #ffffff4d; }
+.destaque-trilho span { display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: var(--ouro); }
+.destaque-ritmo button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; color: #fff; background: transparent; cursor: pointer; }
+.destaque-ritmo button:hover, .destaque-ritmo button:focus-visible { background: #ffffff26; }
+@media (prefers-reduced-motion: reduce) { .destaque-foto { transition: none; } }
 .atalhos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: -62px; position: relative; z-index: 2; }
 .atalho { background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px 18px 20px; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; text-decoration: none; box-shadow: var(--sombra); align-content: start; }
 .atalho:hover { border-color: var(--ouro); }
@@ -252,7 +260,7 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
   .busca { grid-template-columns: 1fr 1fr; }
   .btn-buscar { grid-column: 1 / -1; }
   .banner { grid-template-columns: 1fr; padding: 34px 28px 96px; }
-  .destaque { order: -1; width: min(240px, 60vw); }
+  .destaque { order: -1; width: min(100%, 430px); margin-bottom: 20px; }
   .atalhos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .duas-col { grid-template-columns: 1fr; }
   .rodape-in { grid-template-columns: 1fr 1fr; }
