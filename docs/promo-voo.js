@@ -7,6 +7,7 @@ const ordem = porId("ordem");
 const mais = porId("mais");
 const consulta = porId("consulta");
 const tamanhoPagina = 12;
+const catalogoAtual = "https://raw.githubusercontent.com/ivancarlosdev/vai-voando-site/main/docs/promo-voo.json.gz";
 const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const data = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeZone: "UTC" });
 const hoje = new Intl.DateTimeFormat("sv-SE", { timeZone: "America/Sao_Paulo" }).format(new Date());
@@ -32,11 +33,12 @@ function prepararVoos(registros) {
     ) &&
     diaValido(voo.ida) && diaValido(voo.volta) &&
     voo.ida >= hoje && voo.volta >= voo.ida &&
+    (!voo.emitirAte || (diaValido(voo.emitirAte) && voo.emitirAte >= hoje)) &&
     valorValido(voo.tarifa) && (voo.taxas == null || valorValido(voo.taxas)) &&
     !voo.esgotado && voo.lugares !== 0
   ).map((voo) => ({
     ...voo,
-    total: voo.taxas == null ? null : voo.tarifa + voo.taxas,
+    total: voo.taxas == null ? null : Math.round((voo.tarifa + voo.taxas) * 100) / 100,
   }));
 }
 
@@ -142,20 +144,30 @@ mais.addEventListener("click", () => {
   lista.children[primeiroNovo]?.querySelector("a")?.focus();
 });
 
+async function lerCatalogo(url) {
+  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
+  const conteudo = resposta.body.pipeThrough(new DecompressionStream("gzip"));
+  const catalogo = await new Response(conteudo).json();
+  const dataFonte = catalogo.atualizadoEm;
+  if (!diaValido(dataFonte) || dataFonte > hoje ||
+      (Date.parse(hoje) - Date.parse(dataFonte)) / 86400000 > 3 ||
+      !Array.isArray(catalogo.voos)) throw new Error("Catálogo vencido ou inválido");
+  return catalogo;
+}
+
 async function carregarVoos() {
   try {
-    const resposta = await fetch("promo-voo.json", { cache: "no-cache" });
-    if (!resposta.ok) throw new Error("Catálogo indisponível");
-    const catalogo = await resposta.json();
+    const catalogo = await lerCatalogo(catalogoAtual).catch(() => lerCatalogo("promo-voo.json.gz"));
     voos = prepararVoos(catalogo.voos);
     for (const [campo, id] of [["origem", "origens"], ["destino", "destinos"]]) {
       const opcoes = [...new Set(voos.map((voo) => voo[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       porId(id).replaceChildren(...opcoes.map((opcao) => new Option(opcao, opcao)));
     }
-    const atualizado = new Date(catalogo.atualizadoEm || "");
-    if (voos.length && Number.isFinite(atualizado.getTime())) {
+    const atualizado = catalogo.atualizadoEm;
+    if (voos.length) {
       porId("atualizado").textContent = "Catálogo atualizado em " +
-        atualizado.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+        dataCurta(atualizado) + " · Fonte: Cativa Operadora";
       porId("atualizado").hidden = false;
     }
   } catch {
