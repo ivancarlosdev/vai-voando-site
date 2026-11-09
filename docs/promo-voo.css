@@ -1,20 +1,45 @@
-.filtros-voo { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.filtros-voo .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+[data-pagina="promo-voo"] .pagina-topo { padding: 26px 0 30px; }
+[data-pagina="promo-voo"] .pagina-topo .lede { margin-top: 5px; }
+[data-pagina="promo-voo"] .conteudo { padding-top: 24px; }
+.filtros-voo { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.filtros-voo label { text-transform: uppercase; letter-spacing: .04em; }
+.filtros-voo input { min-height: 44px; }
+.filtros-voo .acoes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.voo-resultados { margin-top: 24px; padding: 20px; border-radius: var(--raio); background: var(--fundo-2); }
+.voo-resultados .res-barra { margin-bottom: 8px; }
+.voo-resultados .aviso-carga { margin: 6px 0 12px; }
+.voo-lista { display: grid; gap: 10px; }
 .voo-card {
   display: grid;
-  align-content: start;
-  gap: 12px;
-  padding: 20px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(200px, 1fr) minmax(205px, auto);
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
   border: 1px solid var(--linha);
-  border-radius: var(--raio);
+  border-radius: 16px;
   background: #fff;
 }
-.voo-card h3, .voo-card p { margin: 0; }
-.voo-card .voo-total { font-weight: 800; color: var(--petroleo); }
-.voo-card .btn-zap { justify-self: start; }
-@media (max-width: 720px) {
-  .filtros-voo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.voo-card h3 { margin: 0 0 3px; font-size: clamp(1.15rem, 2vw, 1.55rem); line-height: 1.18; }
+.voo-card p { margin: 0; }
+.voo-meta, .voo-taxas { color: var(--suave); font-size: .88rem; }
+.voo-lugares { display: inline-block; margin-top: 7px; padding: 2px 7px; border-radius: 5px; background: #fff0e8; color: #88301c; font-weight: 800; font-size: .76rem; }
+.voo-trechos { display: grid; gap: 5px; }
+.voo-trecho { display: grid; grid-template-columns: 7.7rem 1fr; gap: 8px; align-items: baseline; }
+.voo-trecho strong { font-size: .87rem; white-space: nowrap; }
+.voo-trecho span { font-size: .87rem; font-variant-numeric: tabular-nums; }
+.voo-preco { text-align: right; }
+.voo-preco strong { display: block; font: 800 clamp(1.35rem, 2.4vw, 1.95rem) var(--f-titulo); color: var(--petroleo); }
+.voo-preco .btn-zap { margin-top: 8px; padding: 8px 12px; font-size: .82rem; }
+@media (max-width: 920px) {
+  .filtros-voo { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .voo-card { grid-template-columns: minmax(0, 1fr) minmax(205px, auto); gap: 10px 16px; }
+  .voo-trechos { grid-column: 1; grid-row: 2; }
+  .voo-preco { grid-column: 2; grid-row: 1 / 3; }
 }
-@media (max-width: 440px) {
-  .filtros-voo { grid-template-columns: 1fr; }
+@media (max-width: 590px) {
+  .filtros-voo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .voo-resultados { padding: 12px; }
+  .voo-card { grid-template-columns: 1fr; padding: 14px; }
+  .voo-trechos, .voo-preco { grid-column: auto; grid-row: auto; }
+  .voo-preco { text-align: left; border-top: 1px solid var(--linha); padding-top: 8px; }
 }

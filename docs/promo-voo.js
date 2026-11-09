@@ -78,6 +78,17 @@ function elemento(tag, conteudo, classe) {
   return node;
 }
 
+const dataTrecho = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "short", timeZone: "UTC" });
+const numero = new Intl.NumberFormat("pt-BR");
+
+function trechoVoo(rotulo, dia, origem, destino, partida, chegada) {
+  const linha = elemento("p", "", "voo-trecho");
+  const data = dataTrecho.format(new Date(dia + "T00:00:00Z"));
+  linha.append(elemento("strong", rotulo + " · " + data),
+    elemento("span", (partida ? partida + " " : "") + origem + " → " + (chegada ? chegada + " " : "") + destino));
+  return linha;
+}
+
 function cartao(voo) {
   const trecho = voo.origem + " → " + voo.destino;
   const periodo = "Ida " + dataCurta(voo.ida) + " · Volta " + dataCurta(voo.volta);
@@ -97,9 +108,30 @@ function cartao(voo) {
     "Podem confirmar o preço e a disponibilidade?",
   ].join("\n"));
 
+  const noites = Math.round((Date.parse(voo.volta) - Date.parse(voo.ida)) / 86400000);
+  const origem = /\(([A-Z]{3})\)$/.exec(voo.origem)?.[1] ?? voo.origem;
+  const destino = /\(([A-Z]{3})\)$/.exec(voo.destino)?.[1] ?? voo.destino;
+  const [saidaIda, chegadaIda, saidaVolta, chegadaVolta] = voo.horarios ?? [];
+  const resumo = elemento("div", "");
+  resumo.append(elemento("h3", voo.destino.replace(/ \([A-Z]{3}\)$/, "")),
+    elemento("p", "Saindo de " + voo.origem, "voo-meta"),
+    elemento("p", voo.companhia + " · " + noites + (noites === 1 ? " noite" : " noites"), "voo-meta"));
+  if (voo.lugares === 1) resumo.append(elemento("span", "Último lugar", "voo-lugares"));
+  else if (voo.lugares > 1 && voo.lugares <= 4) {
+    resumo.append(elemento("span", "Últimos " + voo.lugares + " lugares", "voo-lugares"));
+  }
+
+  const itinerario = elemento("div", "", "voo-trechos");
+  itinerario.append(trechoVoo("Ida", voo.ida, origem, destino, saidaIda, chegadaIda),
+    trechoVoo("Volta", voo.volta, destino, origem, saidaVolta, chegadaVolta));
+
+  const preco = elemento("div", "", "voo-preco");
+  preco.append(elemento("strong", moeda.format(voo.total ?? voo.tarifa)),
+    elemento("p", voo.taxas == null ? "Tarifa por pessoa · taxas a consultar" : "Por pessoa, incluindo " + moeda.format(voo.taxas) + " em taxas", "voo-taxas"),
+    link);
+
   const artigo = elemento("article", "", "voo-card");
-  artigo.append(elemento("h3", trecho), elemento("p", voo.companhia),
-    elemento("p", periodo), elemento("p", tarifa), elemento("p", total, "voo-total"), link);
+  artigo.append(resumo, itinerario, preco);
   return artigo;
 }
 
@@ -122,7 +154,7 @@ function renderizar() {
   else if (falha) status.textContent = "O catálogo está indisponível no momento. Você pode pedir uma cotação pelo WhatsApp.";
   else if (!voos.length) status.textContent = "Ainda não há voos publicados. Você pode pedir uma cotação pelo WhatsApp.";
   else if (!encontrados.length) status.textContent = "Nenhum voo encontrado. Experimente outros filtros ou peça uma cotação.";
-  else status.textContent = encontrados.length === 1 ? "1 voo encontrado" : encontrados.length + " voos encontrados";
+  else status.textContent = encontrados.length === 1 ? "1 voo encontrado" : numero.format(encontrados.length) + " voos encontrados";
 }
 
 function refazerBusca() {
