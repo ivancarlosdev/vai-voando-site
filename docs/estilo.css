@@ -37,14 +37,14 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 
 /* ---------- topo ---------- */
 .topo { background: var(--marinho); color: #fff; position: relative; z-index: 20; }
-.topo-in { display: flex; align-items: center; gap: 28px; min-height: 78px; }
+.topo-in { display: flex; align-items: center; gap: clamp(12px, 1.5vw, 24px); min-height: 78px; }
 .marca { display: flex; align-items: center; gap: 12px; text-decoration: none; margin-right: auto; }
 .marca img { border-radius: 50%; width: 56px; height: 56px; }
 .marca span { display: grid; line-height: 1.1; }
 .marca b { font: 800 1.3rem var(--f-titulo); letter-spacing: -.01em; }
 .marca small { font: 700 .66rem var(--f-titulo); letter-spacing: .16em; text-transform: uppercase; color: var(--ouro); margin-top: 3px; }
-.menu { display: flex; gap: 6px; }
-.menu a { text-decoration: none; font-weight: 700; font-size: .95rem; padding: 10px 14px; border-radius: 999px; color: #e8ecfa; }
+.menu { display: flex; align-items: center; gap: 4px; }
+.menu a { text-decoration: none; font-weight: 700; font-size: .95rem; padding: 10px clamp(7px, 0.75vw, 12px); border-radius: 999px; color: #e8ecfa; white-space: nowrap; }
 .menu a:hover { background: rgba(255, 255, 255, .1); }
 .menu a[aria-current="page"] { background: rgba(255, 255, 255, .14); color: #fff; }
 .topo-zap { display: inline-flex; align-items: center; gap: 8px; background: var(--ouro); color: var(--marinho); font: 800 .92rem var(--f-titulo); text-decoration: none; padding: 11px 18px; border-radius: 999px; white-space: nowrap; }
@@ -240,10 +240,10 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 .rodape-nota p { margin: 0; max-width: 100ch; }
 
 /* ---------- telas menores ---------- */
-@media (max-width: 1020px) {
+@media (max-width: 1120px) {
   .topo-in { gap: 12px; }
   .hamb { display: grid; }
-  .menu { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--marinho-2); padding: 10px max(16px, env(safe-area-inset-left, 0px)) 16px; flex-direction: column; border-top: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 20px 30px rgba(0, 0, 0, .25); }
+  .menu { display: none; align-items: stretch; position: absolute; left: 0; right: 0; top: 100%; background: var(--marinho-2); padding: 10px max(16px, env(safe-area-inset-left, 0px)) 16px; flex-direction: column; border-top: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 20px 30px rgba(0, 0, 0, .25); }
   .menu.aberto { display: flex; }
   .menu a { padding: 13px 14px; border-radius: 12px; }
   .busca { grid-template-columns: 1fr 1fr; }

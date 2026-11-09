@@ -37,6 +37,10 @@ async function lerFonte() {
   throw new Error("O catálogo Promo Voo não foi encontrado nos scripts públicos da Cativa.");
 }
 
+function horario(valor) {
+  return /^(?:[01]\d|2[0-3])[0-5]\d$/.test(valor) ? valor.slice(0, 2) + ":" + valor.slice(2) : "";
+}
+
 function aeroporto(mapa, codigo, indice) {
   const cidade = mapa[codigo]?.[indice];
   return typeof cidade === "string" && cidade.trim() ? `${cidade.trim()} (${codigo})` : codigo;
@@ -52,7 +56,7 @@ function converter(dados) {
   const voos = [];
   const vistos = new Set();
   for (const linha of dados.blob.split("\n")) {
-    const [o, d, saida, retorno, , disponiveis, valor, moeda, prazo, , , , , taxa, nacional, cia] = linha.split("|");
+    const [o, d, saida, retorno, , disponiveis, valor, moeda, prazo, saidaIda, chegadaIda, saidaVolta, chegadaVolta, taxa, nacional, cia] = linha.split("|");
     const ida = dataVoo(saida);
     const volta = dataVoo(retorno);
     const emitirAte = dataVoo(prazo);
@@ -68,6 +72,7 @@ function converter(dados) {
       destino: aeroporto(dados.mapa, d, 1),
       companhia: cia.trim(),
       ida, volta, tarifa, taxas, lugares,
+      horarios: [saidaIda, chegadaIda, saidaVolta, chegadaVolta].map(horario),
       ...(emitirAte && { emitirAte }),
     };
     const chave = JSON.stringify(voo);

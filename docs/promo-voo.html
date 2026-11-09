@@ -18,14 +18,13 @@
   <section class="pagina-topo">
     <div class="cx">
       <h1>Promo Voo</h1>
-      <p class="script">Passagens aéreas em promoção</p>
-      <p class="lede">Busque por aeroporto, destino e data. A equipe da Vai Voando confirma a tarifa e a disponibilidade pelo WhatsApp.</p>
+      <p class="lede">Bloqueios aéreos da Cativa Operadora</p>
     </div>
   </section>
   <div class="cx conteudo">
     <form id="filtros" class="filtros-corrida filtros-voo" aria-label="Filtrar promoções de voo">
-      <label>Saindo de<input name="origem" list="origens" maxlength="80" placeholder="Cidade ou aeroporto"></label>
-      <label>Indo para<input name="destino" list="destinos" maxlength="80" placeholder="Cidade ou aeroporto"></label>
+      <label>Saindo de<input name="origem" list="origens" maxlength="80" placeholder="Cidade ou IATA"></label>
+      <label>Indo para<input name="destino" list="destinos" maxlength="80" placeholder="Cidade ou IATA"></label>
       <label>Saídas a partir de<input name="inicio" type="date"></label>
       <label>Saídas até<input name="fim" type="date"></label>
       <label>Até R$ por pessoa<input name="preco" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Total com taxas"></label>
@@ -36,7 +35,7 @@
       <datalist id="origens"></datalist>
       <datalist id="destinos"></datalist>
     </form>
-    <section class="secao" aria-labelledby="contagem">
+    <section class="secao voo-resultados" aria-labelledby="contagem">
       <div class="res-barra">
         <h2 id="contagem">Passagens em promoção</h2>
         <label class="ordem">Ordenar por
@@ -45,7 +44,7 @@
       </div>
       <p id="atualizado" class="aviso-carga" hidden></p>
       <p id="status-voo" class="aviso-carga" role="status">Carregando ofertas…</p>
-      <div class="grade" id="lista"></div>
+      <div class="voo-lista" id="lista"></div>
       <button id="mais" class="btn-borda mais" type="button" hidden>Mostrar mais voos</button>
       <p class="tec-nota">Valores por pessoa, sujeitos à confirmação da tarifa e à disponibilidade. O filtro por preço considera o total com taxas quando informado.</p>
     </section>
