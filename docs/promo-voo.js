@@ -89,6 +89,24 @@ function trechoVoo(rotulo, dia, origem, destino, partida, chegada) {
   return linha;
 }
 
+const feriadosFixos = [
+  ["01-01", "Ano-Novo"], ["04-21", "Tiradentes"], ["05-01", "Dia do Trabalho"],
+  ["09-07", "Independência do Brasil"], ["10-12", "Nossa Senhora Aparecida"],
+  ["11-02", "Finados"], ["11-15", "Proclamação da República"],
+  ["11-20", "Consciência Negra"], ["12-25", "Natal"],
+];
+
+function feriadosDaViagem(ida, volta) {
+  const feriados = new Set();
+  for (let ano = Number(ida.slice(0, 4)); ano <= Number(volta.slice(0, 4)); ano++) {
+    for (const [dia, nome] of feriadosFixos) {
+      const data = ano + "-" + dia;
+      if (data >= ida && data <= volta) feriados.add(nome);
+    }
+  }
+  return [...feriados];
+}
+
 function cartao(voo) {
   const trecho = voo.origem + " → " + voo.destino;
   const periodo = "Ida " + dataCurta(voo.ida) + " · Volta " + dataCurta(voo.volta);
@@ -113,13 +131,25 @@ function cartao(voo) {
   const destino = /\(([A-Z]{3})\)$/.exec(voo.destino)?.[1] ?? voo.destino;
   const [saidaIda, chegadaIda, saidaVolta, chegadaVolta] = voo.horarios ?? [];
   const resumo = elemento("div", "");
-  resumo.append(elemento("h3", voo.destino.replace(/ \([A-Z]{3}\)$/, "")),
-    elemento("p", "Saindo de " + voo.origem, "voo-meta"),
-    elemento("p", voo.companhia + " · " + noites + (noites === 1 ? " noite" : " noites"), "voo-meta"));
-  if (voo.lugares === 1) resumo.append(elemento("span", "Último lugar", "voo-lugares"));
-  else if (voo.lugares > 1 && voo.lugares <= 4) {
-    resumo.append(elemento("span", "Últimos " + voo.lugares + " lugares", "voo-lugares"));
+  const cabecalho = elemento("div", "", "voo-cabecalho");
+  cabecalho.append(elemento("h3", voo.destino.replace(/ \([A-Z]{3}\)$/, "")),
+    elemento("p", noites + (noites === 1 ? " noite" : " noites") + " · " + voo.companhia, "voo-meta"));
+
+  const partida = elemento("p", "", "voo-origem");
+  const aviao = elemento("span", "✈", "voo-aviao");
+  aviao.setAttribute("aria-hidden", "true");
+  partida.append(aviao, elemento("span", "Saindo de"), elemento("strong", voo.origem));
+  resumo.append(cabecalho, partida);
+
+  const etiquetas = elemento("div", "", "voo-etiquetas");
+  for (const feriado of feriadosDaViagem(voo.ida, voo.volta)) {
+    etiquetas.append(elemento("span", feriado, "voo-feriado"));
   }
+  if (voo.lugares === 1) etiquetas.append(elemento("span", "Último lugar", "voo-lugares"));
+  else if (voo.lugares > 1 && voo.lugares <= 4) {
+    etiquetas.append(elemento("span", "Últimos " + voo.lugares + " lugares", "voo-lugares"));
+  }
+  if (etiquetas.childElementCount) resumo.append(etiquetas);
 
   const itinerario = elemento("div", "", "voo-trechos");
   itinerario.append(trechoVoo("Ida", voo.ida, origem, destino, saidaIda, chegadaIda),

@@ -22,7 +22,15 @@
 .voo-card h3 { margin: 0 0 3px; font-size: clamp(1.15rem, 2vw, 1.55rem); line-height: 1.18; }
 .voo-card p { margin: 0; }
 .voo-meta, .voo-taxas { color: var(--suave); font-size: .88rem; }
-.voo-lugares { display: inline-block; margin-top: 7px; padding: 2px 7px; border-radius: 5px; background: #fff0e8; color: #88301c; font-weight: 800; font-size: .76rem; }
+.voo-cabecalho { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px; }
+.voo-cabecalho .voo-meta { font-weight: 700; }
+.voo-card .voo-origem { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 5px; color: var(--suave); font-size: .92rem; }
+.voo-origem strong { color: var(--marinho); }
+.voo-aviao { color: var(--petroleo); }
+.voo-etiquetas { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.voo-lugares, .voo-feriado { padding: 2px 7px; border-radius: 5px; font-weight: 800; font-size: .76rem; }
+.voo-lugares { background: #fce9e9; color: #96232d; }
+.voo-feriado { background: #f8efd1; color: #664900; }
 .voo-trechos { display: grid; gap: 5px; }
 .voo-trecho { display: grid; grid-template-columns: 7.7rem 1fr; gap: 8px; align-items: baseline; }
 .voo-trecho strong { font-size: .87rem; white-space: nowrap; }
