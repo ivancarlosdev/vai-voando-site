@@ -306,11 +306,16 @@ mais.addEventListener("click", () => {
   lista.children[primeira]?.querySelector("a")?.focus();
 });
 
+async function lerCatalogo(url) {
+  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
+  return new Response(resposta.body.pipeThrough(new DecompressionStream("gzip"))).json();
+}
+
 async function carregar() {
   try {
-    const resposta = await fetch("cruzeiros-v2.json.gz", { signal: AbortSignal.timeout(10000) });
-    if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
-    const catalogo = await new Response(resposta.body.pipeThrough(new DecompressionStream("gzip"))).json();
+    const catalogo = await lerCatalogo("https://raw.githubusercontent.com/ivancarlosdev/vai-voando-site/main/docs/cruzeiros-v2.json.gz")
+      .catch(() => lerCatalogo("cruzeiros-v2.json.gz"));
     ofertas = catalogo.ofertas.map((o, id) => ({
       ...o, id, saidas: o.saidas.filter((s) => s.ida >= hoje),
     })).filter((o) => o.saidas.length);
