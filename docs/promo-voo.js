@@ -126,6 +126,15 @@ function cartao(voo) {
     "Podem confirmar o preço e a disponibilidade?",
   ].join("\n"));
 
+  link.addEventListener("click", () => {
+    window.gtag?.("event", "clique_promo_voo", {
+      send_to: "G-19N6EGNTT7",
+      voo_origem: voo.origem,
+      voo_destino: voo.destino,
+      voo_data_ida: voo.ida,
+    });
+  });
+
   const noites = Math.round((Date.parse(voo.volta) - Date.parse(voo.ida)) / 86400000);
   const origem = /\(([A-Z]{3})\)$/.exec(voo.origem)?.[1] ?? voo.origem;
   const destino = /\(([A-Z]{3})\)$/.exec(voo.destino)?.[1] ?? voo.destino;
