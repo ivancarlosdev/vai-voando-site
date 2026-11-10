@@ -21,6 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="cruzeiros.css?v=4">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"TravelAgency","name":"Vai Voando - Morada do Sol","alternateName":"Morada do Sol Viagens","url":"https://www.vaivoandomoradadosol.com.br/","logo":"https://www.vaivoandomoradadosol.com.br/marca/logo.png","image":"https://www.vaivoandomoradadosol.com.br/marca/compartilhar.jpg","slogan":"Seu destino, nossa paixão.","email":"vaivoando.moradadosol@gmail.com","telephone":["+5516991420330","+5516991333578"],"address":{"@type":"PostalAddress","streetAddress":"Alameda Paulista, 2026","addressLocality":"Araraquara","addressRegion":"SP","postalCode":"14810-282","addressCountry":"BR"},"sameAs":["https://www.instagram.com/vaivoando.moradadosol/"]}
 </script>
@@ -107,6 +108,20 @@
       </a>
     </section>
 
+    <section class="cruzeiro-oportunidades" id="inicio-cruzeiros" aria-labelledby="inicio-cruzeiros-titulo" hidden style="border-radius: var(--raio); margin-top: 34px">
+      <div class="cx">
+        <div class="res-barra">
+          <div>
+            <p class="cruzeiros-selo">✦ Seleção Vai Voando</p>
+            <h2 id="inicio-cruzeiros-titulo">Cruzeiros em <em>destaque</em></h2>
+          </div>
+          <a class="btn-ouro" href="cruzeiros.html">Ver todos os cruzeiros</a>
+        </div>
+        <p>Compare saídas no Brasil e no exterior. Valores de referência por pessoa, sujeitos a confirmação.</p>
+        <div class="cruzeiro-destaques" id="inicio-cruzeiros-lista"></div>
+      </div>
+    </section>
+
     <div id="pacotes">
       <div id="vista-inicio"></div>
       <section id="vista-busca" class="secao" hidden aria-live="polite">
@@ -142,6 +157,24 @@
 <script src="layout.js"></script>
 <script src="arte.js"></script>
 <script src="home.js"></script>
+<script type="module">
+  import { carregarCatalogo, chaveCruzeiro, montarDestaques } from "./cruzeiros-destaques.js";
+
+  async function destacarCruzeiros() {
+    const { ofertas } = await carregarCatalogo();
+    const total = montarDestaques(ofertas, document.getElementById("inicio-cruzeiros-lista"), (oferta, saida) => {
+      const link = document.createElement("a");
+      link.className = "btn-ouro";
+      link.textContent = "Ver esta saída →";
+      const params = new URLSearchParams({ roteiro: chaveCruzeiro(oferta), saida: saida.ida });
+      link.href = "cruzeiros.html?" + params;
+      return link;
+    });
+    document.getElementById("inicio-cruzeiros").hidden = !total;
+  }
+
+  destacarCruzeiros().catch(() => {});
+</script>
 <script>
   (() => {
     if(window.__bhldScript)return;window.__bhldScript=true;
