@@ -1,0 +1,37 @@
+name: Atualizar Cruzeiros
+
+on:
+  schedule:
+    - cron: "17 11 * * *" # 08h17 em Brasília, 30 min após o último horário programado
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-cruzeiros
+  cancel-in-progress: false
+
+jobs:
+  catalogo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/atualizar-cruzeiros.mjs
+      - name: Publicar catálogo
+        run: |
+          git add docs/cruzeiros-v2.json.gz
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name="Robô Vai Voando" -c user.email="actions@users.noreply.github.com" commit -m "Atualiza catálogo Cruzeiros"
+          for tentativa in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then exit 0; fi
+            git rebase --abort 2>/dev/null || true
+            sleep 3
+          done
+          exit 1
