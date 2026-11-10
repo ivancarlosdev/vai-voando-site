@@ -22,6 +22,20 @@
   ];
   var atual = document.body.getAttribute("data-pagina") || "inicio";
 
+  document.addEventListener("click", function (evento) {
+    var link = evento.target.closest('a[href^="https://wa.me/"]');
+    if (!link || link.classList.contains("vr-btn")) return;
+
+    var secao = atual;
+    if (link.closest("#inicio-cruzeiros")) secao = "cruzeiros";
+    else if (link.closest("#pacotes, #vista-busca, #banner-promocoes")) secao = "pacotes";
+
+    window.gtag?.("event", "clique_cotacao_whatsapp", {
+      send_to: "G-19N6EGNTT7",
+      secao_cotacao: secao
+    });
+  });
+
   var nav = paginas.map(function (p) {
     return '<a href="' + p.href + '"' + (p.chave === atual ? ' aria-current="page"' : "") + ">" + p.rotulo + "</a>";
   }).join("");
