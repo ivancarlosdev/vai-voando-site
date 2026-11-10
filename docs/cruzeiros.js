@@ -21,8 +21,32 @@ function el(tag, texto, classe) {
   return no;
 }
 
+const cabines = ["Interna", "Externa", "Varanda", "Suíte"];
+const logos = {
+  CRZ: "corazul-marca.png", PROMOACAO: "promoacao.svg", COS: "costa.svg",
+  NCL: "ncl.svg", DCL: "dcl-cores.png", R: "rccl.svg", C: "clb.svg", Z: "aza.svg",
+  PCL: "pcl.svg", HAL: "hal.svg", CUN: "cun.svg", CLTY: "clty.svg", OCE: "oce.svg",
+  AMA: "ama.svg", CRY: "cry.svg", REG: "reg.svg", SBN: "sbn.svg",
+};
+const fonte = "https://mediumvioletred-peafowl-260122.hostingersite.com/";
+const diaSemana = new Intl.DateTimeFormat("pt-BR", { weekday: "long", timeZone: "UTC" });
+
+function itinerario(saida) {
+  const listaDias = el("ol", "", "cruzeiro-dias");
+  for (const [dia, porto, chegada, partida] of saida.dias) {
+    const dataDia = new Date(saida.ida + "T00:00:00Z");
+    dataDia.setUTCDate(dataDia.getUTCDate() + dia - 1);
+    const item = el("li", "");
+    item.append(el("span", "Dia " + dia + " · " + data.format(dataDia)), el("strong", porto));
+    const horas = [chegada && "Chegada " + chegada, partida && "Saída " + partida].filter(Boolean);
+    if (horas.length) item.append(el("span", horas.join(" · ")));
+    listaDias.append(item);
+  }
+  return listaDias;
+}
+
 function cartao(o) {
-  const foto = el("div", "", "foto cruzeiro-foto");
+  const foto = el("div", "", "cruzeiro-foto");
   if (o.url) {
     const img = el("img", "");
     img.src = o.url;
@@ -33,23 +57,133 @@ function cartao(o) {
     img.addEventListener("error", () => img.remove(), { once: true });
     foto.append(img);
   }
-  foto.append(el("span", o.destino, "selo"));
-  const corpo = el("div", "", "cartao-corpo");
-  corpo.append(el("h3", o.titulo), el("p", [o.cia, o.navio, o.noites + (o.noites === 1 ? " noite" : " noites")].filter(Boolean).join(" · "), "sub"),
-    el("p", "Embarque: " + o.porto + " · " + formatar(o.ida), "saida"));
-  if (o.escalas.length > 1) corpo.append(el("p", "Roteiro: " + o.escalas.join(" → "), "cruzeiro-portos"));
-  const preco = el("div", "", "preco");
-  preco.append(el("span", "Valor de referência por pessoa", "rot"), el("strong", moeda.format(o.preco), "val"),
-    el("span", "Confirme cabine, taxas e disponibilidade.", "taxa"));
-  const link = el("a", "Pedir cotação deste cruzeiro", "btn-zap");
-  link.target = "_blank";
-  link.rel = "noopener";
-  link.href = window.waLink("Olá! Quero uma cotação atualizada do cruzeiro " + o.titulo + " (" + o.cia +
-    "), com embarque em " + o.porto + " em " + formatar(o.ida) + ". Podem confirmar cabines, taxas e valor final?");
-  corpo.append(preco, link);
-  const artigo = el("article", "", "cartao cruzeiro-card");
-  artigo.append(foto, corpo);
+  const detalhes = el("details", "", "cruzeiro-itinerario");
+  const comRoteiro = o.saidas.filter((s) => s.dias.length);
+  const seletor = el("select", "");
+  const dias = el("div", "");
+  function mostrarRoteiro(saida) {
+    seletor.value = saida.ida;
+    dias.replaceChildren(itinerario(saida));
+  }
+  if (comRoteiro.length) {
+    detalhes.append(el("summary", "Ver itinerário dia a dia"));
+    const rotulo = el("label", "Saída");
+    seletor.append(...comRoteiro.map((s) => new Option(formatar(s.ida), s.ida)));
+    seletor.addEventListener("change", () => {
+      const saida = comRoteiro.find((s) => s.ida === seletor.value);
+      if (saida) mostrarRoteiro(saida);
+    });
+    rotulo.append(seletor);
+    detalhes.append(rotulo, dias);
+    mostrarRoteiro(comRoteiro[0]);
+  }
+
+  const corpo = el("div", "", "cruzeiro-resumo");
+  corpo.append(el("span", o.destino, "cruzeiro-regiao"), el("h3", o.titulo),
+    el("p", [o.noites + (o.noites === 1 ? " noite" : " noites"), o.cia, o.navio].filter(Boolean).join(" · ")),
+    el("p", "Embarque em " + o.porto));
+  if (o.escalas.length > 1) corpo.append(el("p", o.escalas.join(" → "), "cruzeiro-portos"));
+  if (comRoteiro.length) corpo.append(detalhes);
+  const menor = el("div", "", "cruzeiro-menor");
+  menor.append(el("span", "A partir de"), el("strong", moeda.format(o.preco)), el("small", "Referência por pessoa"));
+
+  const topo = el("div", "", "cruzeiro-card-topo");
+  topo.append(foto, corpo, menor);
+
+  const tabela = el("table", "", "cruzeiro-tarifas");
+  const cabecalho = el("tr", "");
+  for (const titulo of ["Saída", ...cabines]) {
+    const th = el("th", titulo);
+    th.scope = "col";
+    cabecalho.append(th);
+  }
+  const thead = el("thead", "");
+  thead.append(cabecalho);
+  const tbody = el("tbody", "");
+  const linhas = o.saidas.map((saida, i) => {
+    const linha = el("tr", "");
+    linha.hidden = i >= 3;
+    const dataSaida = el("th", "");
+    dataSaida.scope = "row";
+    dataSaida.append(el("strong", formatar(saida.ida)),
+      el("small", diaSemana.format(new Date(saida.ida + "T00:00:00Z"))));
+    if (saida.dias.length) {
+      const ver = el("button", "Ver itinerário", "cruzeiro-ver-dia");
+      ver.type = "button";
+      ver.addEventListener("click", () => {
+        detalhes.open = true;
+        mostrarRoteiro(saida);
+        seletor.focus();
+      });
+      dataSaida.append(ver);
+    }
+    linha.append(dataSaida);
+    saida.cabines.forEach((valor, indice) => {
+      const celula = el("td", "");
+      if (valor == null) {
+        celula.append(el("span", "Sem tarifa", "cruzeiro-sem-tarifa"));
+      } else {
+        const link = el("a", moeda.format(valor), "cruzeiro-tarifa");
+        if (valor === saida.preco) link.classList.add("menor");
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.setAttribute("aria-label", "Cotar cabine " + cabines[indice] + " em " + formatar(saida.ida) + " · " + moeda.format(valor));
+        link.href = window.waLink("Olá! Quero cotar o cruzeiro " + o.titulo + " (" + o.cia +
+          "), cabine " + cabines[indice] + ", com embarque em " + o.porto + " em " + formatar(saida.ida) +
+          ". Vi o valor de referência de " + moeda.format(valor) + " por pessoa. Podem confirmar?");
+        celula.append(link);
+      }
+      linha.append(celula);
+    });
+    tbody.append(linha);
+    return linha;
+  });
+  tabela.append(thead, tbody);
+  const rolagem = el("div", "", "cruzeiro-tabela");
+  rolagem.tabIndex = 0;
+  rolagem.setAttribute("role", "region");
+  rolagem.setAttribute("aria-label", "Tarifas por cabine para " + o.titulo);
+  rolagem.append(tabela);
+  const artigo = el("article", "", "cruzeiro-card");
+  artigo.append(topo, rolagem);
+  if (linhas.length > 3) {
+    const expandir = el("button", "Ver mais saídas (" + linhas.length + " no total)", "btn-borda cruzeiro-mais-saidas");
+    expandir.type = "button";
+    expandir.setAttribute("aria-expanded", "false");
+    expandir.addEventListener("click", () => {
+      const aberto = expandir.getAttribute("aria-expanded") !== "true";
+      linhas.slice(3).forEach((linha) => { linha.hidden = !aberto; });
+      expandir.setAttribute("aria-expanded", String(aberto));
+      expandir.textContent = aberto ? "Ver menos saídas" : "Ver mais saídas (" + linhas.length + " no total)";
+    });
+    artigo.append(expandir);
+  }
   return artigo;
+}
+
+function montarCompanhias() {
+  const faixa = porId("cruzeiro-companhias");
+  const companhias = new Map(ofertas.map((o) => [o.codigo, o.cia]));
+  const codigos = Object.keys(logos).filter((codigo) => companhias.has(codigo));
+  const opcoes = [["", "Todas"], ...codigos.map((codigo) => [codigo, companhias.get(codigo)])];
+  for (const [codigo, nome] of opcoes) {
+    const botao = el("button", nome);
+    botao.type = "button";
+    botao.value = codigo ? nome : "";
+    botao.setAttribute("aria-label", nome);
+    if (codigo) {
+      const logo = el("img", "");
+      logo.alt = "";
+      logo.addEventListener("load", () => botao.replaceChildren(logo), { once: true });
+      logo.src = fonte + "logos/" + logos[codigo];
+    }
+    botao.addEventListener("click", () => {
+      campos.cia.value = botao.value;
+      filtrar();
+    });
+    faixa.append(botao);
+  }
+  faixa.hidden = false;
 }
 
 function corresponde(o) {
@@ -58,15 +192,20 @@ function corresponde(o) {
     (!campos.destino.value || o.destino === campos.destino.value) &&
     (!campos.cia.value || o.cia === campos.cia.value) &&
     (!campos.noites.value || duracao === campos.noites.value) &&
-    (!campos.inicio.value || o.ida >= campos.inicio.value) &&
-    (!campos.fim.value || o.ida <= campos.fim.value) &&
     (brasil.getAttribute("aria-pressed") !== "true" || o.brasil);
 }
 
 function render() {
   if (!carregado) return;
   const invertido = campos.inicio.value && campos.fim.value && campos.inicio.value > campos.fim.value;
-  const visiveis = invertido ? [] : ofertas.filter(corresponde);
+  for (const botao of porId("cruzeiro-companhias").children) {
+    botao.setAttribute("aria-pressed", String(botao.value === campos.cia.value));
+  }
+  const visiveis = invertido ? [] : ofertas.filter(corresponde).map((o) => {
+    const saidas = o.saidas.filter((s) => (!campos.inicio.value || s.ida >= campos.inicio.value) &&
+      (!campos.fim.value || s.ida <= campos.fim.value));
+    return { ...o, saidas, ida: saidas[0]?.ida, preco: Math.min(...saidas.map((s) => s.preco)) };
+  }).filter((o) => o.saidas.length);
   visiveis.sort((a, b) => {
     if (ordem.value === "data") return a.ida.localeCompare(b.ida) || a.preco - b.preco;
     if (ordem.value === "preco") return a.preco - b.preco || a.ida.localeCompare(b.ida);
@@ -105,16 +244,19 @@ mais.addEventListener("click", () => {
 
 async function carregar() {
   try {
-    const resposta = await fetch("cruzeiros.json.gz", { signal: AbortSignal.timeout(10000) });
+    const resposta = await fetch("cruzeiros-v2.json.gz", { signal: AbortSignal.timeout(10000) });
     if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
     const catalogo = await new Response(resposta.body.pipeThrough(new DecompressionStream("gzip"))).json();
-    ofertas = catalogo.ofertas.filter((o) => o.ida >= hoje);
+    ofertas = catalogo.ofertas.map((o) => ({
+      ...o, saidas: o.saidas.filter((s) => s.ida >= hoje),
+    })).filter((o) => o.saidas.length);
     for (const campo of ["porto", "destino", "cia"]) {
       const opcoes = [...new Set(ofertas.map((o) => o[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       campos[campo].append(...opcoes.map((opcao) => new Option(opcao, opcao)));
     }
     porId("cruzeiro-data").textContent = "Tarifas de referência do catálogo de " + formatar(catalogo.data) +
       ". O preço e a disponibilidade atuais são confirmados na cotação.";
+    montarCompanhias();
     carregado = true;
     render();
   } catch {
