@@ -9,7 +9,7 @@
 <link rel="icon" href="marca/favicon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="estilo.css">
-<link rel="stylesheet" href="cruzeiros.css?v=2">
+<link rel="stylesheet" href="cruzeiros.css?v=3">
 </head>
 <body data-pagina="cruzeiros">
 <header id="topo"></header>
@@ -20,6 +20,20 @@
       <h1>Encontre seu próximo cruzeiro</h1>
       <p class="lede">Da costa brasileira ao Mediterrâneo. Escolha seu roteiro e fale com quem cuida da sua viagem.</p>
       <a class="btn-ouro" href="#cruzeiro-filtros">Explorar cruzeiros</a>
+    </div>
+  </section>
+  <nav class="cruzeiro-navegacao" aria-label="Navegação de cruzeiros" id="cruzeiro-navegacao" hidden>
+    <a href="#cruzeiro-filtros">Filtros</a>
+    <button type="button" id="cruzeiro-cias-anterior" aria-label="Companhias anteriores">‹</button>
+    <div class="cruzeiro-companhias" id="cruzeiro-companhias" role="group" aria-label="Selecionar companhia"></div>
+    <button type="button" id="cruzeiro-cias-proximo" aria-label="Mais companhias">›</button>
+  </nav>
+  <section class="cruzeiro-oportunidades" id="cruzeiro-oportunidades" aria-labelledby="cruzeiro-oportunidades-titulo" hidden>
+    <div class="cx">
+      <p class="cruzeiros-selo">✦ Seleção Vai Voando</p>
+      <h2 id="cruzeiro-oportunidades-titulo">Cruzeiros em <em>destaque</em></h2>
+      <p>Explore uma saída e compare as cabines antes de pedir sua cotação.</p>
+      <div class="cruzeiro-destaques" id="cruzeiro-destaques"></div>
     </div>
   </section>
   <div class="cx conteudo">
@@ -42,7 +56,6 @@
       </div>
       <p class="tec-nota" id="cruzeiro-data"></p>
       <p id="cruzeiro-status" class="aviso-carga" role="status">Carregando roteiros…</p>
-      <div class="cruzeiro-companhias" id="cruzeiro-companhias" role="group" aria-label="Selecionar companhia" hidden></div>
       <p class="tec-nota cruzeiro-tabela-nota">Selecione um valor para cotar a cabine daquela data pelo WhatsApp.</p>
       <div class="cruzeiro-lista" id="cruzeiro-lista"></div>
       <button id="cruzeiro-mais" class="btn-borda mais" type="button" hidden>Mostrar mais cruzeiros</button>
@@ -57,6 +70,6 @@
 <footer id="rodape" class="rodape"></footer>
 <script src="config.js"></script>
 <script src="layout.js"></script>
-<script type="module" src="cruzeiros.js?v=2"></script>
+<script type="module" src="cruzeiros.js?v=3"></script>
 </body>
 </html>

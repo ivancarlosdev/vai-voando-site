@@ -13,6 +13,7 @@ const formatar = (dia) => data.format(new Date(dia + "T00:00:00Z"));
 let ofertas = [];
 let limite = 12;
 let carregado = false;
+let destaque = null;
 
 function el(tag, texto, classe) {
   const no = document.createElement(tag);
@@ -45,7 +46,7 @@ function itinerario(saida) {
   return listaDias;
 }
 
-function cartao(o) {
+function fotoCruzeiro(o) {
   const foto = el("div", "", "cruzeiro-foto");
   if (o.url) {
     const img = el("img", "");
@@ -57,6 +58,11 @@ function cartao(o) {
     img.addEventListener("error", () => img.remove(), { once: true });
     foto.append(img);
   }
+  return foto;
+}
+
+function cartao(o) {
+  const foto = fotoCruzeiro(o);
   const detalhes = el("details", "", "cruzeiro-itinerario");
   const comRoteiro = o.saidas.filter((s) => s.dias.length);
   const seletor = el("select", "");
@@ -145,6 +151,7 @@ function cartao(o) {
   rolagem.setAttribute("aria-label", "Tarifas por cabine para " + o.titulo);
   rolagem.append(tabela);
   const artigo = el("article", "", "cruzeiro-card");
+  artigo.tabIndex = -1;
   artigo.append(topo, rolagem);
   if (linhas.length > 3) {
     const expandir = el("button", "Ver mais saídas (" + linhas.length + " no total)", "btn-borda cruzeiro-mais-saidas");
@@ -180,10 +187,58 @@ function montarCompanhias() {
     botao.addEventListener("click", () => {
       campos.cia.value = botao.value;
       filtrar();
+      porId("cruzeiro-titulo").scrollIntoView({ block: "start" });
     });
     faixa.append(botao);
   }
-  faixa.hidden = false;
+  porId("cruzeiro-cias-anterior").addEventListener("click", () => faixa.scrollBy({ left: -300 }));
+  porId("cruzeiro-cias-proximo").addEventListener("click", () => faixa.scrollBy({ left: 300 }));
+  porId("cruzeiro-navegacao").hidden = false;
+}
+
+function montarDestaques() {
+  const embarques = ofertas.filter((o) => o.url).map((o) => ({
+    oferta: o,
+    saida: o.saidas.reduce((melhor, s) => s.preco < melhor.preco ? s : melhor),
+  })).sort((a, b) => a.saida.preco - b.saida.preco);
+  const selecionados = [];
+  const navios = new Set();
+  for (const nacional of [true, false, null]) {
+    let total = 0;
+    for (const item of embarques) {
+      const o = item.oferta;
+      const chave = o.navio || o.cia;
+      if (selecionados.length >= 4 || (nacional != null && total >= 2)) break;
+      if ((nacional != null && o.brasil !== nacional) || navios.has(chave)) continue;
+      navios.add(chave);
+      selecionados.push(item);
+      total++;
+    }
+  }
+  for (const { oferta, saida } of selecionados) {
+    const card = el("article", "", "cruzeiro-destaque");
+    const foto = fotoCruzeiro(oferta);
+    foto.append(el("span", oferta.destino, "cruzeiro-destaque-regiao"));
+    const corpo = el("div", "", "cruzeiro-destaque-corpo");
+    const botao = el("button", "Ver esta saída →", "btn-ouro");
+    botao.type = "button";
+    botao.addEventListener("click", () => {
+      form.reset();
+      destaque = { id: oferta.id, ida: saida.ida };
+      limite = 12;
+      render();
+      const card = lista.firstElementChild;
+      card?.focus({ preventScroll: true });
+      card?.scrollIntoView({ block: "start" });
+    });
+    corpo.append(el("h3", oferta.titulo),
+      el("p", oferta.noites + (oferta.noites === 1 ? " noite" : " noites") + " · " + oferta.cia),
+      el("p", formatar(saida.ida) + " · " + oferta.porto),
+      el("strong", moeda.format(saida.preco)), el("small", "Referência por pessoa"), botao);
+    card.append(foto, corpo);
+    porId("cruzeiro-destaques").append(card);
+  }
+  porId("cruzeiro-oportunidades").hidden = !selecionados.length;
 }
 
 function corresponde(o) {
@@ -204,9 +259,15 @@ function render() {
   const visiveis = invertido ? [] : ofertas.filter(corresponde).map((o) => {
     const saidas = o.saidas.filter((s) => (!campos.inicio.value || s.ida >= campos.inicio.value) &&
       (!campos.fim.value || s.ida <= campos.fim.value));
+    if (o.id === destaque?.id) {
+      const posicao = saidas.findIndex((s) => s.ida === destaque.ida);
+      if (posicao > 0) saidas.unshift(...saidas.splice(posicao, 1));
+    }
     return { ...o, saidas, ida: saidas[0]?.ida, preco: Math.min(...saidas.map((s) => s.preco)) };
   }).filter((o) => o.saidas.length);
   visiveis.sort((a, b) => {
+    const primeiro = Number(b.id === destaque?.id) - Number(a.id === destaque?.id);
+    if (primeiro) return primeiro;
     if (ordem.value === "data") return a.ida.localeCompare(b.ida) || a.preco - b.preco;
     if (ordem.value === "preco") return a.preco - b.preco || a.ida.localeCompare(b.ida);
     return Number(b.brasil) - Number(a.brasil) || a.preco - b.preco;
@@ -219,6 +280,7 @@ function render() {
 }
 
 function filtrar() {
+  destaque = null;
   limite = 12;
   render();
 }
@@ -227,7 +289,9 @@ form.addEventListener("submit", (evento) => evento.preventDefault());
 form.addEventListener("input", filtrar);
 form.addEventListener("reset", () => {
   brasil.setAttribute("aria-pressed", "false");
-  requestAnimationFrame(filtrar);
+  destaque = null;
+  limite = 12;
+  requestAnimationFrame(() => { if (!destaque) render(); });
 });
 ordem.addEventListener("change", filtrar);
 brasil.addEventListener("click", () => {
@@ -247,8 +311,8 @@ async function carregar() {
     const resposta = await fetch("cruzeiros-v2.json.gz", { signal: AbortSignal.timeout(10000) });
     if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
     const catalogo = await new Response(resposta.body.pipeThrough(new DecompressionStream("gzip"))).json();
-    ofertas = catalogo.ofertas.map((o) => ({
-      ...o, saidas: o.saidas.filter((s) => s.ida >= hoje),
+    ofertas = catalogo.ofertas.map((o, id) => ({
+      ...o, id, saidas: o.saidas.filter((s) => s.ida >= hoje),
     })).filter((o) => o.saidas.length);
     for (const campo of ["porto", "destino", "cia"]) {
       const opcoes = [...new Set(ofertas.map((o) => o[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
@@ -257,6 +321,7 @@ async function carregar() {
     porId("cruzeiro-data").textContent = "Tarifas de referência do catálogo de " + formatar(catalogo.data) +
       ". O preço e a disponibilidade atuais são confirmados na cotação.";
     montarCompanhias();
+    montarDestaques();
     carregado = true;
     render();
   } catch {
