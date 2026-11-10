@@ -67,7 +67,10 @@
     '<div class="rod-col"><h2>Onde estamos</h2><p>' + esc(e.rua) + "<br>" + esc(e.cidade) + " - " + esc(e.uf) + "<br>CEP " + esc(e.cep) + "</p>" +
     "<h2>O que fazemos</h2><p>" + A.servicos.map(esc).join(", ") + ".</p></div>" +
     "</div>" +
-    '<div class="cx rodape-nota"><p>Tarifas por pessoa, sujeitas a disponibilidade no momento da reserva. Os valores não incluem taxas de embarque. Confirme o prazo de emissão e as condições de pagamento com a agência. Pacotes operados pela Cativa Operadora e vendidos pela ' + esc(A.nome) + ".</p>" +
+    '<div class="cx rodape-nota"><p>Agência Vai Voando Morada do Sol registrada sob o CNPJ</p>' +
+    '<p><strong>CNPJ: 58.097.260/0001-07</strong> (Ativo)<br>' +
+    '<strong>Razão Social:</strong> 58.097.260 IVAN CARLOS DA SILVA SAMPAIO - ME<br>' +
+    '<strong>Cadastur:</strong> 58.097.260/0001-07</p>' +
     "<p>&copy; " + new Date().getFullYear() + " " + esc(A.nome) + ". Todos os direitos reservados.</p></div>";
 
   var t = document.getElementById("topo");
