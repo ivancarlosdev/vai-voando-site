@@ -1,3 +1,5 @@
+import { carregarCatalogo, chaveCruzeiro, fotoCruzeiro, montarDestaques } from "./cruzeiros-destaques.js";
+
 const porId = (id) => document.getElementById(id);
 const form = porId("cruzeiro-filtros");
 const campos = form.elements;
@@ -8,7 +10,6 @@ const brasil = porId("cruzeiro-brasil");
 const mais = porId("cruzeiro-mais");
 const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const data = new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC", dateStyle: "short" });
-const hoje = new Intl.DateTimeFormat("sv-SE", { timeZone: "America/Sao_Paulo" }).format(new Date());
 const formatar = (dia) => data.format(new Date(dia + "T00:00:00Z"));
 let ofertas = [];
 let limite = 12;
@@ -44,21 +45,6 @@ function itinerario(saida) {
     listaDias.append(item);
   }
   return listaDias;
-}
-
-function fotoCruzeiro(o) {
-  const foto = el("div", "", "cruzeiro-foto");
-  if (o.url) {
-    const img = el("img", "");
-    img.src = o.url;
-    img.alt = "";
-    img.loading = "lazy";
-    img.decoding = "async";
-    img.referrerPolicy = "no-referrer";
-    img.addEventListener("error", () => img.remove(), { once: true });
-    foto.append(img);
-  }
-  return foto;
 }
 
 function cartao(o) {
@@ -196,49 +182,14 @@ function montarCompanhias() {
   porId("cruzeiro-navegacao").hidden = false;
 }
 
-function montarDestaques() {
-  const embarques = ofertas.filter((o) => o.url).map((o) => ({
-    oferta: o,
-    saida: o.saidas.reduce((melhor, s) => s.preco < melhor.preco ? s : melhor),
-  })).sort((a, b) => a.saida.preco - b.saida.preco);
-  const selecionados = [];
-  const navios = new Set();
-  for (const nacional of [true, false, null]) {
-    let total = 0;
-    for (const item of embarques) {
-      const o = item.oferta;
-      const chave = o.navio || o.cia;
-      if (selecionados.length >= 4 || (nacional != null && total >= 2)) break;
-      if ((nacional != null && o.brasil !== nacional) || navios.has(chave)) continue;
-      navios.add(chave);
-      selecionados.push(item);
-      total++;
-    }
-  }
-  for (const { oferta, saida } of selecionados) {
-    const card = el("article", "", "cruzeiro-destaque");
-    const foto = fotoCruzeiro(oferta);
-    foto.append(el("span", oferta.destino, "cruzeiro-destaque-regiao"));
-    const corpo = el("div", "", "cruzeiro-destaque-corpo");
-    const botao = el("button", "Ver esta saída →", "btn-ouro");
-    botao.type = "button";
-    botao.addEventListener("click", () => {
-      form.reset();
-      destaque = { id: oferta.id, ida: saida.ida };
-      limite = 12;
-      render();
-      const card = lista.firstElementChild;
-      card?.focus({ preventScroll: true });
-      card?.scrollIntoView({ block: "start" });
-    });
-    corpo.append(el("h3", oferta.titulo),
-      el("p", oferta.noites + (oferta.noites === 1 ? " noite" : " noites") + " · " + oferta.cia),
-      el("p", formatar(saida.ida) + " · " + oferta.porto),
-      el("strong", moeda.format(saida.preco)), el("small", "Referência por pessoa"), botao);
-    card.append(foto, corpo);
-    porId("cruzeiro-destaques").append(card);
-  }
-  porId("cruzeiro-oportunidades").hidden = !selecionados.length;
+function focarSaida(oferta, ida) {
+  form.reset();
+  destaque = { id: oferta.id, ida };
+  limite = 12;
+  render();
+  const card = lista.firstElementChild;
+  card?.focus({ preventScroll: true });
+  card?.scrollIntoView({ block: "start" });
 }
 
 function corresponde(o) {
@@ -306,19 +257,10 @@ mais.addEventListener("click", () => {
   lista.children[primeira]?.querySelector("a")?.focus();
 });
 
-async function lerCatalogo(url) {
-  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000) });
-  if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
-  return new Response(resposta.body.pipeThrough(new DecompressionStream("gzip"))).json();
-}
-
 async function carregar() {
   try {
-    const catalogo = await lerCatalogo("https://raw.githubusercontent.com/ivancarlosdev/vai-voando-site/main/docs/cruzeiros-v2.json.gz")
-      .catch(() => lerCatalogo("cruzeiros-v2.json.gz"));
-    ofertas = catalogo.ofertas.map((o, id) => ({
-      ...o, id, saidas: o.saidas.filter((s) => s.ida >= hoje),
-    })).filter((o) => o.saidas.length);
+    const catalogo = await carregarCatalogo();
+    ofertas = catalogo.ofertas;
     for (const campo of ["porto", "destino", "cia"]) {
       const opcoes = [...new Set(ofertas.map((o) => o[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       campos[campo].append(...opcoes.map((opcao) => new Option(opcao, opcao)));
@@ -326,9 +268,21 @@ async function carregar() {
     porId("cruzeiro-data").textContent = "Tarifas de referência do catálogo de " + formatar(catalogo.data) +
       ". O preço e a disponibilidade atuais são confirmados na cotação.";
     montarCompanhias();
-    montarDestaques();
+    const total = montarDestaques(ofertas, porId("cruzeiro-destaques"), (oferta, saida) => {
+      const botao = el("button", "Ver esta saída →", "btn-ouro");
+      botao.type = "button";
+      botao.addEventListener("click", () => focarSaida(oferta, saida.ida));
+      return botao;
+    });
+    porId("cruzeiro-oportunidades").hidden = !total;
     carregado = true;
-    render();
+
+    const params = new URLSearchParams(location.search);
+    const ida = params.get("saida");
+    const oferta = ofertas.find((o) => chaveCruzeiro(o) === params.get("roteiro") &&
+      o.saidas.some((s) => s.ida === ida));
+    if (oferta) focarSaida(oferta, ida);
+    else render();
   } catch {
     status.textContent = "O catálogo está indisponível. Peça uma cotação pelo WhatsApp.";
   }
