@@ -1,0 +1,22 @@
+.pagina-topo.cruzeiros-topo {
+  padding: clamp(48px, 8vw, 108px) 0;
+  background: linear-gradient(90deg, #100a22f5 0%, #120d2abf 46%, #120d2a20 100%),
+    #191438 url("https://mediumvioletred-peafowl-260122.hostingersite.com/imagens/capa-mar.jpg") center 54% / cover;
+}
+.cruzeiros-topo h1 { font-size: clamp(2.45rem, 6vw, 4.8rem); max-width: 15ch; letter-spacing: -.045em; }
+.cruzeiros-topo .lede { margin-bottom: 22px; color: #fff; }
+.cruzeiros-selo { color: var(--ouro); text-transform: uppercase; font-weight: 800; letter-spacing: .12em; }
+.cruzeiros-atalhos { margin-bottom: 12px; }
+.cruzeiros-atalhos button[aria-pressed="true"] { background: var(--marinho); color: #fff; }
+.cruzeiro-filtros { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cruzeiro-foto { background: linear-gradient(145deg, #134674, #140b30); }
+.cruzeiro-foto img { display: block; }
+.cruzeiro-portos { color: var(--suave); font-size: .88rem; }
+.cruzeiro-card .preco .rot { font-weight: 700; }
+#cruzeiro-data { margin-bottom: 10px; }
+[data-pagina="cruzeiros"] .chamada { margin: 24px 0 12px; }
+@media (max-width: 640px) {
+  .cruzeiro-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pagina-topo.cruzeiros-topo { background-position: center, 60% center; }
+}
+@media (max-width: 380px) { .cruzeiro-filtros { grid-template-columns: minmax(0, 1fr); } }

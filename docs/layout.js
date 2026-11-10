@@ -15,6 +15,7 @@
     { href: "index.html#pacotes", rotulo: "Pacotes", chave: "pacotes" },
     { href: "quem-somos.html", rotulo: "Quem somos", chave: "quem-somos" },
     { href: "promo-voo.html", rotulo: "Promo Voo", chave: "promo-voo" },
+    { href: "cruzeiros.html", rotulo: "Cruzeiros", chave: "cruzeiros" },
     { href: "corridas.html", rotulo: "Corridas", chave: "corridas" },
     { href: "visto.html", rotulo: "Visto", chave: "visto" },
     { href: "formas-de-pagamento.html", rotulo: "Formas de pagamento", chave: "pagamento" }

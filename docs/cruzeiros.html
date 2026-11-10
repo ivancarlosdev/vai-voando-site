@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cruzeiros | Vai Voando - Morada do Sol</title>
+<meta name="description" content="Encontre cruzeiros no Brasil e no exterior por porto, destino, companhia e data. Consulte com a Vai Voando Morada do Sol.">
+<link rel="canonical" href="https://www.vaivoandomoradadosol.com.br/cruzeiros.html">
+<link rel="icon" href="marca/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="cruzeiros.css">
+</head>
+<body data-pagina="cruzeiros">
+<header id="topo"></header>
+<main>
+  <section class="pagina-topo cruzeiros-topo">
+    <div class="cx">
+      <p class="cruzeiros-selo">Vai Voando · Morada do Sol</p>
+      <h1>Encontre seu próximo cruzeiro</h1>
+      <p class="lede">Da costa brasileira ao Mediterrâneo. Escolha seu roteiro e fale com quem cuida da sua viagem.</p>
+      <a class="btn-ouro" href="#cruzeiro-filtros">Explorar cruzeiros</a>
+    </div>
+  </section>
+  <div class="cx conteudo">
+    <div class="cruzeiros-atalhos" aria-label="Seleção rápida">
+      <button type="button" class="btn-borda" id="cruzeiro-brasil" aria-pressed="false">Embarques no Brasil</button>
+    </div>
+    <form class="filtros-corrida cruzeiro-filtros" id="cruzeiro-filtros" aria-label="Filtrar cruzeiros">
+      <label>Porto de embarque<select name="porto"><option value="">Todos os portos</option></select></label>
+      <label>Destino<select name="destino"><option value="">Todos os destinos</option></select></label>
+      <label>Companhia<select name="cia"><option value="">Todas as companhias</option></select></label>
+      <label>Duração<select name="noites"><option value="">Qualquer duração</option><option value="curta">Até 4 noites</option><option value="media">5 a 7 noites</option><option value="longa">8 noites ou mais</option></select></label>
+      <label>Embarque a partir de<input name="inicio" type="date"></label>
+      <label>Embarque até<input name="fim" type="date"></label>
+      <button class="link-limpar" type="reset">Limpar filtros</button>
+    </form>
+    <section class="secao" aria-labelledby="cruzeiro-titulo">
+      <div class="res-barra">
+        <h2 id="cruzeiro-titulo">Roteiros selecionados</h2>
+        <label class="ordem">Ordenar por <select id="cruzeiro-ordem"><option value="selecao">Nossa seleção</option><option value="preco">Menor preço de referência</option><option value="data">Embarque mais próximo</option></select></label>
+      </div>
+      <p class="tec-nota" id="cruzeiro-data"></p>
+      <p id="cruzeiro-status" class="aviso-carga" role="status">Carregando roteiros…</p>
+      <div class="grade" id="cruzeiro-lista"></div>
+      <button id="cruzeiro-mais" class="btn-borda mais" type="button" hidden>Mostrar mais cruzeiros</button>
+    </section>
+    <section class="chamada">
+      <div><h2>Quer outra data ou cabine?</h2><p>Peça à nossa equipe uma cotação atualizada para o seu grupo.</p></div>
+      <a class="btn-zap" target="_blank" rel="noopener" data-wa="Olá! Quero cotar um cruzeiro. Podem me ajudar com os roteiros e cabines disponíveis?">Pedir cotação pelo WhatsApp</a>
+    </section>
+    <p class="tec-nota">Fonte dos roteiros e valores de referência: <a href="https://viajandocomdesconto.com/abas/cruzeiros" target="_blank" rel="noopener">Viajando com Desconto</a>.</p>
+  </div>
+</main>
+<footer id="rodape" class="rodape"></footer>
+<script src="config.js"></script>
+<script src="layout.js"></script>
+<script type="module" src="cruzeiros.js"></script>
+</body>
+</html>

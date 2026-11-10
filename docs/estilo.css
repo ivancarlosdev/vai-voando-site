@@ -265,7 +265,7 @@ h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; margin: 0; text-wr
 .rodape-nota p { margin: 0; max-width: 100ch; }
 
 /* ---------- telas menores ---------- */
-@media (max-width: 1120px) {
+@media (max-width: 1200px) {
   .topo-in { gap: 12px; }
   .hamb { display: grid; }
   .menu { display: none; align-items: stretch; position: absolute; left: 0; right: 0; top: 100%; background: var(--marinho-2); padding: 10px max(16px, env(safe-area-inset-left, 0px)) 16px; flex-direction: column; border-top: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 20px 30px rgba(0, 0, 0, .25); }
