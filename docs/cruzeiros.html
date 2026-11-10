@@ -9,7 +9,7 @@
 <link rel="icon" href="marca/favicon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="estilo.css">
-<link rel="stylesheet" href="cruzeiros.css">
+<link rel="stylesheet" href="cruzeiros.css?v=2">
 </head>
 <body data-pagina="cruzeiros">
 <header id="topo"></header>
@@ -42,7 +42,9 @@
       </div>
       <p class="tec-nota" id="cruzeiro-data"></p>
       <p id="cruzeiro-status" class="aviso-carga" role="status">Carregando roteiros…</p>
-      <div class="grade" id="cruzeiro-lista"></div>
+      <div class="cruzeiro-companhias" id="cruzeiro-companhias" role="group" aria-label="Selecionar companhia" hidden></div>
+      <p class="tec-nota cruzeiro-tabela-nota">Selecione um valor para cotar a cabine daquela data pelo WhatsApp.</p>
+      <div class="cruzeiro-lista" id="cruzeiro-lista"></div>
       <button id="cruzeiro-mais" class="btn-borda mais" type="button" hidden>Mostrar mais cruzeiros</button>
     </section>
     <section class="chamada">
@@ -55,6 +57,6 @@
 <footer id="rodape" class="rodape"></footer>
 <script src="config.js"></script>
 <script src="layout.js"></script>
-<script type="module" src="cruzeiros.js"></script>
+<script type="module" src="cruzeiros.js?v=2"></script>
 </body>
 </html>
