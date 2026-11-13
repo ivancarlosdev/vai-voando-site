@@ -325,7 +325,7 @@
     var preco = r.preco == null
       ? '<div class="consulte">Consulte o valor</div>'
       : '<div class="rot">Preço por pessoa</div><div class="val"><small>' + (m ? m[1] : "10") + "x de</small> R$ " + r.preco.toLocaleString("pt-BR") + "</div>" +
-        (o.taxas ? '<div class="taxa">+ ' + esc(o.taxas) + " de taxas de embarque</div>" : '<div class="taxa">Taxas de embarque à parte</div>');
+        (p.editorialId ? '<div class="taxa">Valor informado pela agência. Confirme disponibilidade.</div>' : o.taxas ? '<div class="taxa">+ ' + esc(o.taxas) + " de taxas de embarque</div>" : '<div class="taxa">Taxas de embarque à parte</div>');
     var hoteis = (o.hoteis || []).slice().sort(function (a, b) { return (a.preco || 0) - (b.preco || 0); });
     var hotHtml = hoteis.length ? '<div class="hoteis">' + hoteis.map(function (h) {
       return '<div class="hotel"><b>' + esc(limpaNome(h.nome)) + "</b>" + (h.regime ? "<span>" + esc(h.regime) + "</span>" : "") +
