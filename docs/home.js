@@ -97,7 +97,7 @@
   });
 
   // ---------- dados ----------
-  function carregar(dados) {
+  function carregar(dados, editorial) {
     if (dados.exemplo) $("aviso-exemplo").hidden = false;
     if (dados.geradoEm) {
       var g = new Date(dados.geradoEm);
@@ -111,6 +111,18 @@
         if (!ex.length) return;
         rows.push({ p: p, o: o, ex: ex, preco: o.valorParcela == null ? null : o.valorParcela, cat: p.categoria || "Nacional" });
       });
+    });
+    (editorial.offers || []).forEach(function (offer) {
+      if (!offer.departure || !offer.return_date) return;
+      var p = { nome: offer.title, destino: offer.destination, categoria: offer.category,
+        slug: 'crm-' + offer.id, capa: offer.image_url,
+        inclui: (offer.inclusions || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean),
+        editorialId: offer.id };
+      var o = { cidade: offer.origin, valorParcela: offer.price / offer.installments,
+        parcela: offer.installments + 'x de R$ ' + brl(offer.price / offer.installments),
+        saidas: [[offer.departure, offer.return_date, true]] };
+      var ex = [{ ini: iso(offer.departure), fim: iso(offer.return_date), pr: true }];
+      if (ex[0].ini >= hoje) rows.unshift({ p: p, o: o, ex: ex, preco: o.valorParcela, cat: p.categoria });
     });
 
     var origens = {};
@@ -127,7 +139,28 @@
     });
 
     if (!dados.exemplo) destaque();
+    if ((editorial.banners || []).length) mostrarBannersEditoriais(editorial.banners);
     render();
+  }
+  function mostrarBannersEditoriais(banners) {
+    var banner = $('banner-promocoes'), i = 0, tempo;
+    banner.classList.add('banner-editorial');
+    banner.insertAdjacentHTML('beforeend', '<div class="editorial-slide"><picture><source media="(max-width: 650px)" id="editorial-mobile"><img id="editorial-image" alt=""></picture><div class="editorial-copy"><span>Vai Voando · Morada do Sol</span><h2 id="editorial-title"></h2><p id="editorial-subtitle"></p><a class="btn-ouro" id="editorial-link"></a></div><div class="editorial-dots" id="editorial-dots"></div></div>');
+    function show() {
+      var x = banners[i];
+      $('editorial-image').src = x.image_url;
+      $('editorial-mobile').srcset = x.mobile_image_url || x.image_url;
+      $('editorial-title').textContent = x.title;
+      $('editorial-subtitle').textContent = x.subtitle || '';
+      $('editorial-link').textContent = x.button_text || 'Ver pacotes';
+      $('editorial-link').href = x.button_url || '/';
+      $('editorial-dots').innerHTML = banners.map(function (_, n) { return '<button type="button" aria-label="Banner ' + (n + 1) + '" aria-current="' + (n === i) + '" data-index="' + n + '"></button>'; }).join('');
+    }
+    function next() { if (document.hidden || banner.matches(':focus-within')) return; i = (i + 1) % banners.length; show(); }
+    $('editorial-dots').addEventListener('click', function (e) { var b = e.target.closest('[data-index]'); if (b) { i = +b.dataset.index; show(); } });
+    show();
+    if (banners.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) tempo = setInterval(next, 6500);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) clearInterval(tempo); else if (banners.length > 1 && !tempo) tempo = setInterval(next, 6500); });
   }
   function opcao(v, t) { var o = document.createElement("option"); o.value = v; o.textContent = t; return o; }
 
@@ -292,7 +325,7 @@
     var preco = r.preco == null
       ? '<div class="consulte">Consulte o valor</div>'
       : '<div class="rot">Preço por pessoa</div><div class="val"><small>' + (m ? m[1] : "10") + "x de</small> R$ " + r.preco.toLocaleString("pt-BR") + "</div>" +
-        (o.taxas ? '<div class="taxa">+ ' + esc(o.taxas) + " de taxas de embarque</div>" : '<div class="taxa">Taxas de embarque à parte</div>');
+        (p.editorialId ? '<div class="taxa">Valor informado pela agência. Confirme disponibilidade.</div>' : o.taxas ? '<div class="taxa">+ ' + esc(o.taxas) + " de taxas de embarque</div>" : '<div class="taxa">Taxas de embarque à parte</div>');
     var hoteis = (o.hoteis || []).slice().sort(function (a, b) { return (a.preco || 0) - (b.preco || 0); });
     var hotHtml = hoteis.length ? '<div class="hoteis">' + hoteis.map(function (h) {
       return '<div class="hotel"><b>' + esc(limpaNome(h.nome)) + "</b>" + (h.regime ? "<span>" + esc(h.regime) + "</span>" : "") +
@@ -310,7 +343,7 @@
       '<div class="sub"><b>' + tipo(inclui) + "</b><span>|</span><span>" + dia(prox.ini) + " – " + dia(prox.fim) + "</span></div>" +
       '<div class="saida">' + svg("aviao") + "<span>" + (origemTxt ? "Saindo de " + esc(origemTxt) : "Saída e roteiro sob consulta") + mais + "</span></div>" +
       aviso + outrasHtml + det + '<div class="preco">' + preco + "</div>" +
-      '<a class="btn-zap" target="_blank" rel="noopener" href="' + window.waLink(msg) + '">Quero este pacote</a></div></article>';
+      '<a class="btn-zap" target="_blank" rel="noopener" ' + (p.editorialId ? 'data-editorial-id="' + p.editorialId + '" ' : '') + 'href="' + window.waLink(msg) + '">Quero este pacote</a></div></article>';
   }
 
   // ---------- carrosséis ----------
@@ -391,9 +424,15 @@
     var a = $("aba-pacotes"); if (a) a.click(); else alterou();
   });
 
-  fetch("ofertas.json", { cache: "no-cache" })
-    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then(carregar)
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('[data-editorial-id]');
+    if (link && navigator.sendBeacon) navigator.sendBeacon('https://crm.vaivoandomoradadosol.com.br/api/site/click', new Blob([JSON.stringify({ offer_id: +link.dataset.editorialId })], { type: 'text/plain' }));
+  });
+  Promise.all([
+    fetch("ofertas.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+    fetch('https://crm.vaivoandomoradadosol.com.br/api/site/public').then(function (r) { if (!r.ok) throw new Error('CRM indisponível'); return r.json(); }).catch(function () { return { offers: [], banners: [] }; })
+  ])
+    .then(function (results) { carregar(results[0], results[1]); })
     .catch(function () {
       el.vInicio.innerHTML = '<section class="secao"><div class="vazio"><b>Não foi possível carregar as ofertas agora</b>Atualize a página em instantes ou fale com a gente pelo WhatsApp.</div></section>';
     });
