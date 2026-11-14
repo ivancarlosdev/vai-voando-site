@@ -121,4 +121,17 @@
     var i = +el.getAttribute("data-zap-texto"); el.textContent = (A.whatsapps[i] || principal).texto;
   });
   document.querySelectorAll("[data-email]").forEach(function (a) { a.href = "mailto:" + A.email; a.textContent = A.email; });
+
+  document.addEventListener("click", function (event) {
+    var link = event.target.closest("a");
+    if (!link) return;
+    var banner = link.id === "editorial-link";
+    var whatsapp = /^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(link.href);
+    if (!banner && !whatsapp) return;
+    var offerId = Number(link.dataset.editorialId || 0);
+    var source = banner ? "banner" : offerId ? "offer_whatsapp" : link.closest("#topo") ? "header_whatsapp" : link.closest("#rodape") ? "footer_whatsapp" : "page_whatsapp";
+    var data = { source: source };
+    if (offerId) data.offer_id = offerId;
+    if (navigator.sendBeacon) navigator.sendBeacon("https://crm.vaivoandomoradadosol.com.br/api/site/click", new Blob([JSON.stringify(data)], { type: "text/plain" }));
+  });
 })();
