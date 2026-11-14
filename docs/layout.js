@@ -24,7 +24,7 @@
 
   document.addEventListener("click", function (evento) {
     var link = evento.target.closest('a[href^="https://wa.me/"]');
-    if (!link || link.classList.contains("vr-btn")) return;
+    if (!link || link.classList.contains("vr-btn") || link.classList.contains("btn-zap")) return;
 
     var secao = atual;
     if (link.closest("#inicio-cruzeiros")) secao = "cruzeiros";
@@ -122,9 +122,13 @@
   });
   document.querySelectorAll("[data-email]").forEach(function (a) { a.href = "mailto:" + A.email; a.textContent = A.email; });
 
+  window.VV_CHAT_ENABLED = true;
+  var chatCss = document.createElement("link"); chatCss.rel = "stylesheet"; chatCss.href = "site-chat.css?v=1"; document.head.appendChild(chatCss);
+  var chatScript = document.createElement("script"); chatScript.src = "site-chat.js?v=1"; chatScript.defer = true; document.body.appendChild(chatScript);
   document.addEventListener("click", function (event) {
     var link = event.target.closest("a");
     if (!link) return;
+    if (window.VV_CHAT_ENABLED && link.classList.contains("btn-zap")) return;
     var banner = link.id === "editorial-link";
     var whatsapp = /^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(link.href);
     if (!banner && !whatsapp) return;
