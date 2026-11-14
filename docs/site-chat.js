@@ -48,7 +48,7 @@
     try{var result=await post('/visitor/messages',{token:active.token,after:lastId});var panel=root.querySelector('.vv-chat-messages');if(!panel)return;
       result.messages.forEach(function(m){lastId=Math.max(lastId,m.id);var div=document.createElement('div');div.className='vv-chat-bubble '+(m.sender==='staff'?'staff':'visitor');if(m.attachment_id){var link=document.createElement('button');link.type='button';link.className='vv-chat-download';link.textContent='📎 '+m.filename;link.onclick=function(){download(m.attachment_id,m.filename).catch(function(err){alert(err.message)})};div.appendChild(link)}else div.textContent=m.body;panel.appendChild(div)});
       panel.scrollTop=panel.scrollHeight;
-      if(result.status!=='open'){clearInterval(timer);root.querySelector('.vv-chat-fallback').hidden=false;root.querySelector('form').hidden=true;sessionStorage.removeItem('vv-site-chat');active=null;}
+      if(result.status!=='open'){clearInterval(timer);root.querySelector('.vv-chat-fallback').hidden=false;root.querySelector('form').hidden=true;sessionStorage.removeItem('vv-site-chat');}
     }catch(err){console.error('Atendimento',err)}
   }
   document.addEventListener('click',function(e){var link=e.target.closest('a.btn-zap[href^="https://wa.me/"],a.btn-zap[href^="https://api.whatsapp.com/"]');if(!link)return;e.preventDefault();form(link)},true);
