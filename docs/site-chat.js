@@ -9,7 +9,7 @@
   function context(link){
     var box=link.closest('article,section')||document;
     var title=box.querySelector('h3,h2')?.textContent.trim()||'Viagem sob consulta';
-    var price=box.querySelector('.preco,.valor,#destaque-preco')?.textContent.trim().replace(/\s+/g,' ').slice(0,60)||'';
+    var price=box.querySelector('.preco .val,.valor,#destaque-preco')?.textContent.trim().replace(/\s+/g,' ').slice(0,60)||'';
     var id=Number(link.dataset.editorialId||0);
     return {offer_title:title.slice(0,160),offer_price:price,offer_id:id||null,page_url:location.href.slice(0,400)};
   }
@@ -21,7 +21,7 @@
   function count(source,id){if(!navigator.sendBeacon)return;var d={source:source};if(id)d.offer_id=id;navigator.sendBeacon('https://crm.vaivoandomoradadosol.com.br/api/site/click',new Blob([JSON.stringify(d)],{type:'text/plain'}))}
   function form(link){
     var ctx=context(link),original=link.href;
-    root.innerHTML='<div class="vv-chat-backdrop"></div><section class="vv-chat-panel" role="dialog" aria-modal="true" aria-labelledby="vv-chat-title"><button type="button" class="vv-chat-close" aria-label="Fechar">×</button><h2 id="vv-chat-title">Vamos conversar sobre sua viagem</h2><p class="vv-chat-offer">'+esc(ctx.offer_title)+(ctx.offer_price?' · '+esc(ctx.offer_price):'')+'</p><p>Deixe seus dados para iniciar o atendimento.</p><form id="vv-chat-lead"><label>Seu nome<input name="name" autocomplete="name" minlength="2" maxlength="100" required></label><label>Celular com DDD<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(16) 99999-9999" required></label><label class="vv-chat-consent"><input name="consent" type="checkbox" required> Autorizo o uso dos meus dados para este atendimento.</label><p class="vv-chat-error" role="alert" hidden></p><button type="submit">Continuar</button></form></section>';
+    root.innerHTML='<div class="vv-chat-backdrop"></div><section class="vv-chat-panel" role="dialog" aria-modal="true" aria-labelledby="vv-chat-title"><button type="button" class="vv-chat-close" aria-label="Fechar">×</button><h2 id="vv-chat-title">Vamos conversar sobre sua viagem</h2><p class="vv-chat-offer">'+esc(ctx.offer_title)+(ctx.offer_price?' · '+esc(ctx.offer_price):'')+'</p><p>Deixe seus dados para iniciar o atendimento.</p><form id="vv-chat-lead"><label>Seu nome<input name="name" autocomplete="name" minlength="2" maxlength="100" required></label><label>Celular com DDD<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(16) 99999-9999" required></label><label class="vv-chat-consent"><input name="consent" type="checkbox" required> Autorizo a agência a usar meu nome e celular para responder a esta solicitação.</label><p class="vv-chat-error" role="alert" hidden></p><button type="submit">Continuar</button></form></section>';
     document.body.classList.add('vv-chat-open');
     root.querySelector('.vv-chat-close').onclick=close;root.querySelector('.vv-chat-backdrop').onclick=close;
     root.querySelector('input[name="name"]').focus();
