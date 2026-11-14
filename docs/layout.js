@@ -124,7 +124,7 @@
 
   window.VV_CHAT_ENABLED = true;
   var chatCss = document.createElement("link"); chatCss.rel = "stylesheet"; chatCss.href = "site-chat.css?v=1"; document.head.appendChild(chatCss);
-  var chatScript = document.createElement("script"); chatScript.src = "site-chat.js?v=1"; chatScript.defer = true; document.body.appendChild(chatScript);
+  var chatScript = document.createElement("script"); chatScript.src = "site-chat.js?v=2"; chatScript.defer = true; document.body.appendChild(chatScript);
   document.addEventListener("click", function (event) {
     var link = event.target.closest("a");
     if (!link) return;
