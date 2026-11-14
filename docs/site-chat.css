@@ -1,0 +1,15 @@
+.vv-chat-open{overflow:hidden}
+#vv-chat-root{position:relative;z-index:99999}
+.vv-chat-launcher{position:fixed;right:20px;bottom:20px;border:0;border-radius:999px;padding:14px 18px;background:#112b50;color:#fff;font:inherit;font-weight:700;box-shadow:0 10px 30px #0005;cursor:pointer}
+.vv-chat-backdrop{position:fixed;inset:0;background:#06162ab8;backdrop-filter:blur(3px)}
+.vv-chat-panel{position:fixed;right:20px;bottom:20px;width:min(440px,calc(100vw - 40px));max-height:calc(100dvh - 40px);overflow:auto;background:#fff;color:#112b50;border-radius:22px;padding:26px;box-shadow:0 24px 70px #0006;font:inherit}
+.vv-chat-panel h2{font-size:1.45rem;line-height:1.2;margin:0 35px 10px 0}.vv-chat-panel p{margin:8px 0 16px}.vv-chat-offer{padding:10px 12px;background:#f0f5ff;border-radius:10px;font-weight:700}
+.vv-chat-close{position:absolute;right:14px;top:12px;border:0;background:transparent;color:#122d56;font-size:1.8rem;cursor:pointer}
+.vv-chat-panel form label{display:block;font-size:.9rem;font-weight:700;margin:14px 0}.vv-chat-panel input:not([type="checkbox"]){display:block;width:100%;box-sizing:border-box;border:1px solid #bfcbdc;border-radius:10px;padding:12px;font:inherit;margin-top:5px}
+.vv-chat-consent{display:flex!important;align-items:flex-start;gap:8px;font-weight:400!important;line-height:1.35}.vv-chat-consent input{margin-top:4px}
+.vv-chat-panel form button{border:0;background:#f7bd00;color:#112b50;border-radius:11px;padding:12px 20px;font:inherit;font-weight:800;cursor:pointer}.vv-chat-panel form button:disabled{opacity:.6;cursor:wait}
+.vv-chat-error{color:#a6162f;font-weight:700}.vv-chat-conversation{display:flex;flex-direction:column;height:min(610px,calc(100dvh - 40px))}
+.vv-chat-messages{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px 0}.vv-chat-bubble{max-width:83%;align-self:flex-end;padding:10px 13px;border-radius:13px 13px 3px 13px;background:#e7f2e9;white-space:pre-wrap;overflow-wrap:anywhere}.vv-chat-bubble.staff{align-self:flex-start;background:#eef3fb;border-radius:13px 13px 13px 3px}
+#vv-chat-message{display:flex;gap:8px}#vv-chat-message input{min-width:0;flex:1;margin:0}.vv-chat-fallback{font-size:.88rem}.vv-chat-fallback a{font-weight:700;color:#174c92}
+@media(max-width:550px){.vv-chat-panel{inset:auto 0 0;width:100%;max-height:95dvh;border-radius:20px 20px 0 0}.vv-chat-conversation{height:90dvh}}
+
