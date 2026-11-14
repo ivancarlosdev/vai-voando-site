@@ -424,10 +424,6 @@
     var a = $("aba-pacotes"); if (a) a.click(); else alterou();
   });
 
-  document.addEventListener('click', function (e) {
-    var link = e.target.closest('[data-editorial-id]');
-    if (link && navigator.sendBeacon) navigator.sendBeacon('https://crm.vaivoandomoradadosol.com.br/api/site/click', new Blob([JSON.stringify({ offer_id: +link.dataset.editorialId })], { type: 'text/plain' }));
-  });
   Promise.all([
     fetch("ofertas.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
     fetch('https://crm.vaivoandomoradadosol.com.br/api/site/public').then(function (r) { if (!r.ok) throw new Error('CRM indisponível'); return r.json(); }).catch(function () { return { offers: [], banners: [] }; })
