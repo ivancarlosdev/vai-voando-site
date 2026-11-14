@@ -4,6 +4,8 @@
   var active=null, timer=null, lastId=0, fallback='';
   var esc=function(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
   var post=async function(path,data){var r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data),cache:'no-store'});var x=await r.json();if(!r.ok)throw new Error(x.error||'Não foi possível iniciar o atendimento.');return x};
+  var upload=async function(file){var data=new FormData();data.append('token',active.token);data.append('file',file);var r=await fetch(API+'/visitor/upload',{method:'POST',body:data,cache:'no-store'});var x=await r.json();if(!r.ok)throw new Error(x.error||'Não foi possível enviar o arquivo.');return x};
+  var download=async function(id,name){var r=await fetch(API+'/visitor/attachment/'+id,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:active.token}),cache:'no-store'});if(!r.ok)throw new Error('Não foi possível abrir o arquivo.');var url=URL.createObjectURL(await r.blob()),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(function(){URL.revokeObjectURL(url)},60000)};
   var root=document.createElement('div');root.id='vv-chat-root';document.body.appendChild(root);
   function close(){clearInterval(timer);root.innerHTML=active?'<button type="button" class="vv-chat-launcher">Voltar ao atendimento 💬</button>':'';document.body.classList.remove('vv-chat-open');if(active)root.querySelector('button').onclick=chat}
   function context(link){
@@ -35,15 +37,16 @@
   }
   function chat(){
     lastId=0;clearInterval(timer);
-    root.innerHTML='<div class="vv-chat-backdrop"></div><section class="vv-chat-panel vv-chat-conversation" role="dialog" aria-modal="true" aria-labelledby="vv-chat-title"><button type="button" class="vv-chat-close" aria-label="Fechar">×</button><h2 id="vv-chat-title">Atendimento Vai Voando</h2><p class="vv-chat-offer">'+esc(active.title)+'</p><div class="vv-chat-messages" aria-live="polite"></div><form id="vv-chat-message"><input name="body" maxlength="1000" placeholder="Escreva sua mensagem" aria-label="Mensagem" required><button type="submit">Enviar</button></form><p class="vv-chat-fallback" hidden>Nosso atendimento ficou indisponível. <a href="'+esc(fallback)+'">Continuar no WhatsApp ↗</a></p></section>';
+    root.innerHTML='<div class="vv-chat-backdrop"></div><section class="vv-chat-panel vv-chat-conversation" role="dialog" aria-modal="true" aria-labelledby="vv-chat-title"><button type="button" class="vv-chat-close" aria-label="Fechar">×</button><h2 id="vv-chat-title">Atendimento Vai Voando</h2><p class="vv-chat-offer">'+esc(active.title)+'</p><div class="vv-chat-messages" aria-live="polite"></div><form id="vv-chat-message"><label class="vv-chat-attach" title="Anexar imagem ou PDF">📎<input name="file" type="file" accept=".png,.jpg,.jpeg,.webp,.pdf" aria-label="Anexar imagem ou PDF" hidden></label><input name="body" maxlength="1000" placeholder="Escreva sua mensagem" aria-label="Mensagem" required><button type="submit">Enviar</button></form><small class="vv-chat-file-hint">Imagens e PDF de até 5 MB</small><p class="vv-chat-fallback" hidden>Nosso atendimento ficou indisponível. <a href="'+esc(fallback)+'">Continuar no WhatsApp ↗</a></p></section>';
     root.querySelector('.vv-chat-close').onclick=close;root.querySelector('.vv-chat-backdrop').onclick=close;
     root.querySelector('form').onsubmit=async function(e){e.preventDefault();var f=e.currentTarget,body=f.elements.body.value.trim();if(!body)return;f.elements.body.disabled=true;try{await post('/visitor/send',{token:active.token,body:body});f.elements.body.value='';await poll()}catch(err){root.querySelector('.vv-chat-fallback').hidden=false}finally{f.elements.body.disabled=false;f.elements.body.focus()}};
+    root.querySelector('input[name="file"]').onchange=async function(e){var file=e.target.files[0];if(!file)return;if(file.size>5*1024*1024){alert('O arquivo deve ter até 5 MB.');e.target.value='';return}e.target.disabled=true;try{await upload(file);await poll()}catch(err){alert(err.message)}finally{e.target.disabled=false;e.target.value=''}};
     poll();timer=setInterval(poll,4000);
   }
   async function poll(){
     if(!active)return;
     try{var result=await post('/visitor/messages',{token:active.token,after:lastId});var panel=root.querySelector('.vv-chat-messages');if(!panel)return;
-      result.messages.forEach(function(m){lastId=Math.max(lastId,m.id);var div=document.createElement('div');div.className='vv-chat-bubble '+(m.sender==='staff'?'staff':'visitor');div.textContent=m.body;panel.appendChild(div)});
+      result.messages.forEach(function(m){lastId=Math.max(lastId,m.id);var div=document.createElement('div');div.className='vv-chat-bubble '+(m.sender==='staff'?'staff':'visitor');if(m.attachment_id){var link=document.createElement('button');link.type='button';link.className='vv-chat-download';link.textContent='📎 '+m.filename;link.onclick=function(){download(m.attachment_id,m.filename).catch(function(err){alert(err.message)})};div.appendChild(link)}else div.textContent=m.body;panel.appendChild(div)});
       panel.scrollTop=panel.scrollHeight;
       if(result.status!=='open'){clearInterval(timer);root.querySelector('.vv-chat-fallback').hidden=false;root.querySelector('form').hidden=true;sessionStorage.removeItem('vv-site-chat');active=null;}
     }catch(err){console.error('Atendimento',err)}
