@@ -19,6 +19,31 @@ let voos = [];
 let carregando = true;
 let falha = false;
 let limite = tamanhoPagina;
+let geoCentro = null;
+let geoNome = "";
+const geo = window.VVGeo;
+const geoCidade = porId("geo-cidade");
+const geoStatus = porId("geo-status");
+function ativarGeo(centro, nome) {
+  geoCentro = centro;
+  geoNome = nome;
+  campos.origem.value = "";
+  porId("geo-limpar").hidden = false;
+  refazerBusca();
+}
+porId("geo-localizar").addEventListener("click", () => {
+  geoStatus.textContent = "Localizando aeroportos próximos…";
+  geo.localizar((centro) => { geoCidade.value = ""; ativarGeo(centro, "sua localização"); },
+    () => { geoStatus.textContent = "Não foi possível obter sua localização. Escolha uma cidade na lista."; });
+});
+geoCidade.addEventListener("change", () => {
+  const centro = geo.coordenadas("", geoCidade.value);
+  if (centro) ativarGeo(centro, geoCidade.options[geoCidade.selectedIndex].text);
+});
+porId("geo-limpar").addEventListener("click", () => {
+  geoCentro = null; geoCidade.value = ""; porId("geo-limpar").hidden = true;
+  geoStatus.textContent = "Todos os aeroportos estão visíveis."; refazerBusca();
+});
 
 function diaValido(dia) {
   if (typeof dia !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dia)) return false;
@@ -53,7 +78,8 @@ function filtros() {
 }
 
 function combina(voo, filtro) {
-  return texto(voo.origem).includes(texto(filtro.origem)) &&
+  return (!geoCentro || geo.perto(voo.origem, null, geoCentro, 200)) &&
+    texto(voo.origem).includes(texto(filtro.origem)) &&
     texto(voo.destino).includes(texto(filtro.destino)) &&
     (!filtro.inicio || voo.ida >= filtro.inicio) &&
     (!filtro.fim || voo.ida <= filtro.fim) &&
@@ -194,6 +220,9 @@ function renderizar() {
   else if (!voos.length) status.textContent = "Ainda não há voos publicados. Você pode pedir uma cotação pelo WhatsApp.";
   else if (!encontrados.length) status.textContent = "Nenhum voo encontrado. Experimente outros filtros ou peça uma cotação.";
   else status.textContent = encontrados.length === 1 ? "1 voo encontrado" : numero.format(encontrados.length) + " voos encontrados";
+  if (geoCentro && !carregando && !falha) geoStatus.textContent = encontrados.length
+    ? numero.format(encontrados.length) + " voos com saída em até 200 km de " + geoNome + "."
+    : "Sem voos em até 200 km de " + geoNome + ". Escolha outra cidade ou mostre todos.";
 }
 
 function refazerBusca() {
@@ -206,7 +235,10 @@ formulario.addEventListener("submit", (evento) => {
   evento.preventDefault();
   refazerBusca();
 });
-formulario.addEventListener("reset", () => requestAnimationFrame(refazerBusca));
+formulario.addEventListener("reset", () => requestAnimationFrame(() => {
+  geoCentro = null; geoCidade.value = ""; porId("geo-limpar").hidden = true;
+  geoStatus.textContent = "Todos os aeroportos estão visíveis."; refazerBusca();
+}));
 ordem.addEventListener("change", refazerBusca);
 mais.addEventListener("click", () => {
   const primeiroNovo = limite;
@@ -235,6 +267,15 @@ async function carregarVoos() {
       const opcoes = [...new Set(voos.map((voo) => voo[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       porId(id).replaceChildren(...opcoes.map((opcao) => new Option(opcao, opcao)));
     }
+    const cidades = new Map([["AQA", "Araraquara"], ["PVH", "Porto Velho"]]);
+    voos.forEach((voo) => {
+      const codigo = /\(([A-Z]{3})\)$/.exec(voo.origem)?.[1];
+      if (codigo && geo.coordenadas(voo.origem, codigo)) cidades.set(codigo, voo.origem.replace(/\s*\([A-Z]{3}\)$/, ""));
+    });
+    [...cidades].sort((a, b) => a[1].localeCompare(b[1], "pt-BR")).forEach(([codigo, cidade]) => {
+      geoCidade.append(new Option(cidade + " (" + codigo + ")", codigo));
+    });
+    geo.sePermitido((centro) => ativarGeo(centro, "sua localização"));
     const atualizado = catalogo.atualizadoEm;
     if (voos.length) {
       porId("atualizado").textContent = "Catálogo atualizado em " +
