@@ -546,3 +546,65 @@ body[data-pagina="quem-somos"] .logos img{max-height:48px}
   body[data-pagina="quem-somos"] .mapa-cartao img{max-height:240px}
 }
 @media(max-width:480px){body[data-pagina="quem-somos"] .duas-col .cartao-info dl{grid-template-columns:1fr 1fr}body[data-pagina="quem-somos"] .visita{padding:18px}}
+/* Página institucional: composição editorial */
+.quem-editorial{overflow:hidden}
+.qs-hero{background:radial-gradient(60% 100% at 92% 10%,#174f74 0%,transparent 70%),#071735;color:#fff;padding:clamp(42px,6vw,84px) 0}
+.qs-hero-grade{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:clamp(24px,5vw,70px)}
+.qs-hero-texto{max-width:610px}
+.qs-eyebrow,.qs-etiqueta{font:800 .76rem var(--f-titulo);text-transform:uppercase;letter-spacing:.13em}
+.qs-eyebrow{color:var(--ouro);margin:0 0 16px}
+.qs-hero h1{color:#fff;font:800 clamp(2.4rem,5vw,4.5rem)/1.06 var(--f-titulo);letter-spacing:-.045em;margin:0 0 20px}
+.qs-hero-texto>p:not(.qs-eyebrow){font-size:clamp(1.02rem,1.5vw,1.2rem);line-height:1.65;color:#e5eaf5;max-width:54ch}
+.qs-acoes{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:26px}
+.qs-link-claro{color:#fff;font:800 .93rem var(--f-titulo);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:3px}
+.qs-link-claro:hover,.qs-link-claro:focus-visible{color:var(--ouro)}
+.qs-hero-foto{margin:0;min-width:0;aspect-ratio:4/3;overflow:hidden;border-radius:24px 4px 24px 4px;box-shadow:20px 20px 0 rgba(255,189,0,.12)}
+.qs-hero-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.qs-nav{display:flex;gap:3px;overflow-x:auto;padding:12px max(16px,env(safe-area-inset-left,0px));scrollbar-width:thin;border-bottom:1px solid var(--linha)}
+.qs-nav a{white-space:nowrap;color:var(--marinho);font:800 .84rem var(--f-titulo);text-decoration:none;padding:10px 14px;border-radius:999px}
+.qs-nav a:hover,.qs-nav a:focus-visible{background:var(--fundo-2);outline-color:var(--ouro)}
+.qs-conteudo{padding:0 max(16px,env(safe-area-inset-left,0px)) 44px;display:grid}
+.qs-secao{padding:clamp(42px,6vw,76px) 0;border-bottom:1px solid var(--linha);scroll-margin-top:110px}
+.qs-secao h2{font:800 clamp(1.8rem,3.5vw,3.1rem)/1.14 var(--f-titulo);letter-spacing:-.035em;margin:0 0 18px;max-width:19ch}
+.qs-secao p{line-height:1.65}
+.qs-etiqueta{color:var(--petroleo);margin:0 0 12px!important}
+.qs-intro{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.75fr);gap:clamp(30px,7vw,100px);align-items:center}
+.qs-intro-principal>p:not(.qs-etiqueta){font-size:1.04rem;max-width:68ch;color:var(--suave);margin:0 0 16px}
+.qs-destaque{background:#fff;border-left:5px solid var(--ouro);padding:26px 28px;box-shadow:var(--sombra);border-radius:0 18px 18px 0}
+.qs-aspas{font:800 4rem/1 var(--f-titulo);color:var(--ouro)}
+.qs-destaque p{font:800 clamp(1.4rem,2.2vw,2rem)/1.25 var(--f-titulo);color:var(--marinho);margin:0 0 18px}
+.qs-destaque span:not(.qs-aspas){display:block;color:var(--suave);line-height:1.5;margin-bottom:22px}
+.qs-destaque a{font-weight:800;color:var(--petroleo)}
+.qs-cabecalho{max-width:780px;margin-bottom:26px}
+.qs-cabecalho>p:last-child{color:var(--suave);margin:0}
+.qs-etapas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:18px;overflow:hidden}
+.qs-etapas li{background:#fff;padding:24px 20px;min-width:0}
+.qs-etapas li>span{display:block;color:var(--petroleo);font:800 .9rem var(--f-titulo);margin-bottom:30px}
+.qs-etapas h3{font:800 1.1rem var(--f-titulo);margin:0 0 8px}
+.qs-etapas p{color:var(--suave);font-size:.93rem;margin:0}
+.qs-mapa{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:clamp(24px,5vw,60px)}
+.qs-mapa-texto>p:not(.qs-etiqueta){max-width:50ch;color:var(--suave)}
+.qs-marcos{display:flex;gap:28px;flex-wrap:wrap;margin-top:24px}
+.qs-marcos span{display:grid;gap:2px}
+.qs-marcos strong{font:800 clamp(1.7rem,3vw,2.5rem) var(--f-titulo);color:var(--marinho)}
+.qs-marcos small{color:var(--suave);font-size:.8rem}
+.qs-mapa-arte{margin:0;background:#fff;border:1px solid var(--linha);border-radius:18px;padding:16px;text-align:center}
+.qs-mapa-arte img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain}
+.qs-mapa-arte figcaption{color:var(--suave);font-size:.78rem;margin-top:6px}
+.qs-servicos-grade{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.qs-servicos-grade a{display:flex;flex-direction:column;min-width:0;min-height:220px;background:#fff;border:1px solid var(--linha);border-radius:16px;padding:20px;color:var(--marinho);text-decoration:none;transition:transform .2s ease,box-shadow .2s ease}
+.qs-servicos-grade a:hover,.qs-servicos-grade a:focus-visible{transform:translateY(-4px);box-shadow:var(--sombra)}
+.qs-servicos-grade span{font:800 .76rem var(--f-titulo);color:var(--petroleo)}
+.qs-servicos-grade h3{font:800 1.12rem var(--f-titulo);margin:24px 0 7px}
+.qs-servicos-grade p{font-size:.92rem;color:var(--suave);margin:0 0 18px}
+.qs-servicos-grade b{margin-top:auto;font-size:.86rem;color:var(--petroleo)}
+.qs-pagamento{color:var(--suave);margin:22px 0 0}.qs-pagamento a{font-weight:800}
+.qs-visita{display:flex;justify-content:space-between;align-items:center;gap:26px;background:#071735;color:#fff;padding:clamp(26px,4vw,44px);border-radius:20px;margin-top:48px}
+.qs-visita h2{color:#fff;margin-bottom:12px}.qs-visita p:not(.qs-etiqueta){margin:0;color:#d9e3ef}
+.qs-visita .qs-etiqueta{color:var(--ouro)}
+.qs-visita-acoes{display:grid;justify-items:start;gap:18px;flex-shrink:0}
+.qs-avaliacoes{margin-top:48px}
+@media(max-width:900px){.qs-etapas,.qs-servicos-grade{grid-template-columns:repeat(2,minmax(0,1fr))}.qs-hero-grade{grid-template-columns:1fr 1fr}.qs-intro{gap:30px}}
+@media(max-width:700px){.qs-hero-grade,.qs-intro,.qs-mapa{grid-template-columns:1fr}.qs-hero{padding:42px 0}.qs-hero-foto{aspect-ratio:16/10;max-height:340px}.qs-mapa-arte img{max-height:250px}.qs-visita{display:grid}.qs-visita-acoes{display:flex;align-items:center;flex-wrap:wrap}}
+@media(max-width:480px){.qs-hero h1{font-size:2.25rem}.qs-etapas,.qs-servicos-grade{grid-template-columns:1fr}.qs-etapas li>span{margin-bottom:12px}.qs-servicos-grade a{min-height:0}.qs-servicos-grade h3{margin-top:16px}.qs-marcos{gap:14px}.qs-marcos span{min-width:85px}}
+@media(prefers-reduced-motion:reduce){.qs-servicos-grade a{transition:none}.qs-servicos-grade a:hover{transform:none}}
