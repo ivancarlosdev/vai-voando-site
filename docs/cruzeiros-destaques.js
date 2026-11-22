@@ -25,14 +25,14 @@ function fotoCruzeiro(o) {
 }
 
 async function lerCatalogo(url) {
-  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000), cache: "no-store" });
   if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
   return new Response(resposta.body.pipeThrough(new DecompressionStream("gzip"))).json();
 }
 
 export async function carregarCatalogo() {
-  const catalogo = await lerCatalogo("https://raw.githubusercontent.com/ivancarlosdev/vai-voando-site/main/docs/cruzeiros-v2.json.gz")
-    .catch(() => lerCatalogo("cruzeiros-v2.json.gz"));
+  const catalogo = await lerCatalogo("cruzeiros-v2.json.gz")
+    .catch(() => lerCatalogo("https://raw.githubusercontent.com/ivancarlosdev/vai-voando-site/main/docs/cruzeiros-v2.json.gz"));
   const hoje = new Intl.DateTimeFormat("sv-SE", { timeZone: "America/Sao_Paulo" }).format(new Date());
   const ofertas = catalogo.ofertas.map((o, id) => ({
     ...o, id, saidas: o.saidas.filter((s) => s.ida >= hoje),
