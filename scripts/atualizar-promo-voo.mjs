@@ -25,7 +25,7 @@ function dataVoo(valor) {
 
 async function lerFonte() {
   const html = await baixar(portal);
-  const scripts = [...html.matchAll(/<script\s+src="([^"]+)"/g)]
+  const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["\x27]([^"\x27]+)["\x27]/gi)]
     .map(([, src]) => new URL(src.replaceAll("&amp;", "&"), portal))
     .filter((url) => url.origin === new URL(portal).origin && url.pathname.startsWith("/_s/"));
   const respostas = await Promise.allSettled(scripts.map(baixar));
