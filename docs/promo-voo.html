@@ -45,6 +45,11 @@
       <datalist id="origens"></datalist>
       <datalist id="destinos"></datalist>
     </form>
+    <div class="geo-ofertas" id="geo-ofertas" aria-label="Voos por localização">
+      <div><strong>Voos saindo perto de você</strong><p>Filtre aeroportos de embarque em um raio de 200 km.</p></div>
+      <div class="geo-acoes"><button class="btn-borda" type="button" id="geo-localizar">Usar minha localização</button><label>Ou escolha uma cidade<select id="geo-cidade"><option value="">Escolher cidade</option></select></label><button class="link-limpar" type="button" id="geo-limpar" hidden>Mostrar todos</button></div>
+      <p id="geo-status" role="status">A localização só é usada neste navegador, se você permitir.</p>
+    </div>
     <section class="secao voo-resultados" aria-labelledby="contagem">
       <div class="res-barra">
         <h2 id="contagem">Passagens em promoção</h2>
@@ -72,6 +77,7 @@
 <footer class="rodape" id="rodape"></footer>
 <script src="config.js"></script>
 <script src="layout.js?v=chat-20261113b"></script>
-<script type="module" src="promo-voo.js?v=clique-promo-voo"></script>
+<script src="geo-ofertas.js?v=1"></script>
+<script type="module" src="promo-voo.js?v=geo-1"></script>
 </body>
 </html>
