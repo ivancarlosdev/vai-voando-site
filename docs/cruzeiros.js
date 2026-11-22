@@ -1,4 +1,4 @@
-import { carregarCatalogo, chaveCruzeiro, fotoCruzeiro, montarDestaques } from "./cruzeiros-destaques.js";
+import { carregarCatalogo, chaveCruzeiro, fotoCruzeiro, montarDestaques } from "./cruzeiros-destaques.js?v=5";
 
 const porId = (id) => document.getElementById(id);
 const form = porId("cruzeiro-filtros");
