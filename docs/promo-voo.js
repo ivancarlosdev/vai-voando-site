@@ -248,7 +248,7 @@ mais.addEventListener("click", () => {
 });
 
 async function lerCatalogo(url) {
-  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  const resposta = await fetch(url, { signal: AbortSignal.timeout(6000), cache: "no-store" });
   if (!resposta.ok || !resposta.body) throw new Error("Catálogo indisponível");
   const conteudo = resposta.body.pipeThrough(new DecompressionStream("gzip"));
   const catalogo = await new Response(conteudo).json();
@@ -261,7 +261,7 @@ async function lerCatalogo(url) {
 
 async function carregarVoos() {
   try {
-    const catalogo = await lerCatalogo(catalogoAtual).catch(() => lerCatalogo("promo-voo.json.gz"));
+    const catalogo = await lerCatalogo("promo-voo.json.gz").catch(() => lerCatalogo(catalogoAtual));
     voos = prepararVoos(catalogo.voos);
     for (const [campo, id] of [["origem", "origens"], ["destino", "destinos"]]) {
       const opcoes = [...new Set(voos.map((voo) => voo[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
