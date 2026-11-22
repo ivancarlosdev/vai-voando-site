@@ -497,3 +497,47 @@ body.campanha-black {
 .geo-ofertas select{min-height:42px;max-width:220px;padding:8px;border:1px solid #cdd7e8;border-radius:10px;background:#fff;color:#102044}
 .geo-ofertas #geo-status{flex-basis:100%;margin:0;color:#52617b}
 @media(max-width:650px){.geo-ofertas .geo-acoes{width:100%}.geo-ofertas select{max-width:none;width:100%}}
+
+/* Resumos compactos dos catálogos */
+.catalogo-resumo{background:var(--fundo-2);border:1px solid var(--linha);border-radius:18px;padding:18px 22px;margin:0 0 22px;display:grid;gap:6px}
+.catalogo-resumo p{margin:0;line-height:1.45}
+.catalogo-resumo #cruzeiro-status{font-weight:800;color:var(--marinho);font-size:1.05rem}
+.catalogo-resumo #cruzeiro-data,.catalogo-resumo .cruzeiro-tabela-nota{color:var(--suave);font-size:.93rem}
+.cruzeiro-resultados .res-barra{margin-bottom:14px}
+
+/* Quem somos: menos altura vazia, blocos de leitura e contato acessível */
+body[data-pagina="quem-somos"] .conteudo{gap:26px;padding-top:30px}
+body[data-pagina="quem-somos"] .duas-col{grid-template-columns:1fr;gap:18px}
+body[data-pagina="quem-somos"] .duas-col .texto{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 26px;align-items:start}
+body[data-pagina="quem-somos"] .duas-col .texto>h2,body[data-pagina="quem-somos"] .duas-col .texto>p:first-of-type,body[data-pagina="quem-somos"] .duas-col .texto>p:last-of-type{grid-column:1/-1;margin:0}
+body[data-pagina="quem-somos"] .duas-col .texto>p:first-of-type{max-width:80ch}
+body[data-pagina="quem-somos"] .duas-col .texto>.sub-360:first-of-type{grid-column:1;grid-row:3}
+body[data-pagina="quem-somos"] .duas-col .texto>.passos-360{grid-column:1;grid-row:4}
+body[data-pagina="quem-somos"] .duas-col .texto>.sub-360:last-of-type{grid-column:2;grid-row:3}
+body[data-pagina="quem-somos"] .duas-col .texto>.beneficios{grid-column:2;grid-row:4}
+body[data-pagina="quem-somos"] .duas-col .texto>p:last-of-type{grid-row:5}
+body[data-pagina="quem-somos"] .duas-col .cartao-info{padding:18px 22px}
+body[data-pagina="quem-somos"] .duas-col .cartao-info dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:10px 0 0}
+body[data-pagina="quem-somos"] .duas-col .cartao-info dl>div{min-width:0}
+body[data-pagina="quem-somos"] .mapa-cartao{grid-template-columns:minmax(220px,.8fr) minmax(0,1.5fr);align-items:center;padding:22px;gap:12px}
+body[data-pagina="quem-somos"] .mapa-cartao>div:first-child{grid-column:1}
+body[data-pagina="quem-somos"] .mapa-cartao img{grid-column:2;grid-row:1/3;max-height:320px;object-fit:contain}
+body[data-pagina="quem-somos"] .mapa-cartao .legenda-mapa{grid-column:1;grid-row:2}
+body[data-pagina="quem-somos"] .mapa-cartao .chips{grid-column:1/-1}
+body[data-pagina="quem-somos"] .visita{background:#fff;border:1px solid var(--linha);border-radius:18px;padding:20px 24px;grid-template-columns:1fr auto;gap:20px}
+body[data-pagina="quem-somos"] .visita .moldura{display:none}
+body[data-pagina="quem-somos"] .visita .texto{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+body[data-pagina="quem-somos"] .visita .texto h2{margin:0}
+body[data-pagina="quem-somos"] .visita .texto p{margin:0}
+body[data-pagina="quem-somos"] .logos{grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:8px}
+body[data-pagina="quem-somos"] .logos li{height:66px;padding:8px 12px}
+body[data-pagina="quem-somos"] .logos img{max-height:48px}
+@media(max-width:760px){
+  body[data-pagina="quem-somos"] .duas-col .texto{display:block}
+  body[data-pagina="quem-somos"] .duas-col .texto>*{margin-bottom:14px!important}
+  body[data-pagina="quem-somos"] .duas-col .cartao-info dl{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-pagina="quem-somos"] .mapa-cartao{display:grid;grid-template-columns:1fr}
+  body[data-pagina="quem-somos"] .mapa-cartao img,body[data-pagina="quem-somos"] .mapa-cartao .legenda-mapa,body[data-pagina="quem-somos"] .mapa-cartao>div:first-child{grid-column:1;grid-row:auto}
+  body[data-pagina="quem-somos"] .mapa-cartao img{max-height:240px}
+}
+@media(max-width:480px){body[data-pagina="quem-somos"] .duas-col .cartao-info dl{grid-template-columns:1fr 1fr}body[data-pagina="quem-somos"] .visita{padding:18px}}
