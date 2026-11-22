@@ -265,8 +265,8 @@ async function carregar() {
       const opcoes = [...new Set(ofertas.map((o) => o[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       campos[campo].append(...opcoes.map((opcao) => new Option(opcao, opcao)));
     }
-    porId("cruzeiro-data").textContent = "Tarifas de referência do catálogo de " + formatar(catalogo.data) +
-      ". O preço e a disponibilidade atuais são confirmados na cotação.";
+    porId("cruzeiro-data").textContent = "Atualizado em " + formatar(catalogo.data) +
+      ". Valores e disponibilidade são confirmados na cotação.";
     montarCompanhias();
     const total = montarDestaques(ofertas, porId("cruzeiro-destaques"), (oferta, saida) => {
       const botao = el("button", "Ver esta saída →", "btn-ouro");
