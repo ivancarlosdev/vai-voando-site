@@ -59,6 +59,12 @@
         <button class="link-limpar" type="button" id="limpar" hidden>Limpar filtros</button>
       </div>
 
+      <div class="geo-ofertas" id="geo-ofertas" aria-label="Ofertas por localização">
+        <div><strong>Ofertas saindo perto de você</strong><p>Encontre pacotes com embarque em aeroportos a até 200 km.</p></div>
+        <div class="geo-acoes"><button class="btn-borda" type="button" id="geo-localizar">Usar minha localização</button><label>Ou escolha uma cidade<select id="geo-cidade"><option value="">Escolher cidade</option></select></label><button class="link-limpar" type="button" id="geo-limpar" hidden>Mostrar todas</button></div>
+        <p id="geo-status" role="status">A localização só é usada neste navegador, se você permitir.</p>
+      </div>
+
       <div class="painel-servico" id="painel-servico" hidden>
         <div><h2 id="serv-titulo"></h2><p id="serv-texto"></p></div>
         <a class="btn-zap" id="serv-zap" href="#">Pedir cotação pelo WhatsApp</a>
@@ -168,7 +174,8 @@
 <script src="config.js"></script>
 <script src="layout.js?v=chat-20261113b"></script>
 <script src="arte.js"></script>
-<script src="home.js"></script>
+<script src="geo-ofertas.js?v=1"></script>
+<script src="home.js?v=geo-1"></script>
 <script type="module">
   import { carregarCatalogo, chaveCruzeiro, montarDestaques } from "./cruzeiros-destaques.js?v=5";
 
