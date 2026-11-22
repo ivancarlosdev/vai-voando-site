@@ -20,8 +20,8 @@ if (!Number.isFinite(+gerado) || !Array.isArray(fonte.s) || !fonte.s.length ||
 const data = gerado.toISOString().slice(0, 10);
 const anterior = JSON.parse(gunzipSync(await readFile(arquivo)));
 if (data > hoje) throw new Error("Data da fonte está no futuro");
-if (data < anterior.data || (data === anterior.data && (!anterior.gerado || +gerado <= Date.parse(anterior.gerado)))) {
-  console.log("A fonte ainda não publicou uma base mais recente. Catálogo preservado (" + anterior.data + ").");
+if (data < anterior.data) {
+  console.log("A fonte retornou uma base mais antiga. Catálogo preservado (" + anterior.data + ").");
   process.exit(0);
 }
 
@@ -75,6 +75,11 @@ const selecao = ofertas.filter((o) => {
   return total < 8;
 });
 if (!selecao.length) throw new Error("A fonte não retornou saídas válidas. Catálogo preservado.");
-await writeFile(arquivo + ".tmp", gzipSync(JSON.stringify({ data, gerado: gerado.toISOString(), ofertas: selecao }), { level: 9 }));
+const catalogo = { data, gerado: gerado.toISOString(), ofertas: selecao };
+if (JSON.stringify(catalogo) === JSON.stringify(anterior)) {
+  console.log("Catálogo sem alterações (" + data + ").");
+  process.exit(0);
+}
+await writeFile(arquivo + ".tmp", gzipSync(JSON.stringify(catalogo), { level: 9 }));
 await rename(arquivo + ".tmp", arquivo);
 console.log(selecao.length + " roteiros de cruzeiro da base de " + data + ".");
