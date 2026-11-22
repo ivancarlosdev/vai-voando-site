@@ -279,7 +279,7 @@ async function carregarVoos() {
     const atualizado = catalogo.atualizadoEm;
     if (voos.length) {
       porId("atualizado").textContent = "Catálogo atualizado em " +
-        dataCurta(atualizado) + " · Fonte: Cativa Operadora";
+        dataCurta(atualizado);
       porId("atualizado").hidden = false;
     }
   } catch {
