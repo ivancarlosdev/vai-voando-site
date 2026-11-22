@@ -59,6 +59,10 @@
 
   var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
   var rows = [];
+  var geoCentro = null;
+  var geoNome = "";
+  var geo = window.VVGeo;
+  var geoCidade = $("geo-cidade"), geoStatus = $("geo-status");
   var estado = { aba: "pacotes", cat: "", ordem: "preco", visiveis: PAGINA };
   var el = {
     o: $("f-origem"), d: $("f-destino"), dt: $("f-data"), lista: $("lista"), cont: $("contagem"), ord: $("ordem"),
@@ -138,6 +142,8 @@
       el.d.appendChild(g);
     });
 
+    preencherCidadesGeo();
+    geo.sePermitido(function (centro) { ativarGeo(centro, "sua localização"); });
     if (!dados.exemplo) destaque();
     if ((editorial.banners || []).length) mostrarBannersEditoriais(editorial.banners);
     render();
@@ -162,6 +168,35 @@
     if (banners.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) tempo = setInterval(next, 6500);
     document.addEventListener('visibilitychange', function () { if (document.hidden) clearInterval(tempo); else if (banners.length > 1 && !tempo) tempo = setInterval(next, 6500); });
   }
+  function preencherCidadesGeo() {
+    var cidades = new Map([["AQA", "Araraquara"], ["PVH", "Porto Velho"]]);
+    rows.forEach(function (r) {
+      var codigo = String(r.o.iata || "").toUpperCase();
+      if (/^[A-Z]{3}$/.test(codigo) && geo.coordenadas(r.o.cidade, codigo)) cidades.set(codigo, r.o.cidade);
+    });
+    Array.from(cidades).sort(function (a, b) { return a[1].localeCompare(b[1], "pt-BR"); }).forEach(function (x) {
+      geoCidade.appendChild(opcao(x[0], x[1] + " (" + x[0] + ")"));
+    });
+  }
+  function ativarGeo(centro, nome) {
+    geoCentro = centro; geoNome = nome;
+    $("geo-limpar").hidden = false;
+    render();
+  }
+  $("geo-localizar").addEventListener("click", function () {
+    geoStatus.textContent = "Localizando aeroportos próximos…";
+    geo.localizar(function (centro) { geoCidade.value = ""; ativarGeo(centro, "sua localização"); }, function () {
+      geoStatus.textContent = "Não foi possível obter sua localização. Escolha uma cidade na lista.";
+    });
+  });
+  geoCidade.addEventListener("change", function () {
+    var centro = geo.coordenadas("", geoCidade.value);
+    if (centro) ativarGeo(centro, geoCidade.options[geoCidade.selectedIndex].text);
+  });
+  $("geo-limpar").addEventListener("click", function () {
+    geoCentro = null; geoCidade.value = ""; $("geo-limpar").hidden = true;
+    geoStatus.textContent = "Todas as cidades de saída estão visíveis."; render();
+  });
   function opcao(v, t) { var o = document.createElement("option"); o.value = v; o.textContent = t; return o; }
 
   function destaque() {
@@ -395,7 +430,14 @@
       var por = function (cat) {
         return melhoresPorPacote(todos.filter(function (i) { return i.r.cat === cat && !usados[i.r.p.slug || i.r.p.nome]; }), 12);
       };
+      var proximos = geoCentro ? melhoresPorPacote(todos.filter(function (it) {
+        return geo.perto(it.r.o.cidade, it.r.o.iata, geoCentro, 200);
+      }), 12) : [];
+      if (geoCentro) geoStatus.textContent = proximos.length
+        ? proximos.length + " pacotes em destaque saindo de aeroportos a até 200 km de " + geoNome + "."
+        : "Ainda não há pacotes com saída em até 200 km de " + geoNome + ". Você pode ver todas as ofertas abaixo.";
       el.vInicio.innerHTML =
+        (geoCentro ? secao("Saídas perto de você", "Aeroportos a até 200 km de " + esc(geoNome) + ".", proximos, "") : "") +
         secao("Pacotes imperdíveis", "Os menores preços por pessoa, com saída a partir de hoje.", imper, "") +
         secao("Pacotes nacionais", "Praias, serras e cidades do Brasil.", por("Nacional"), "nacional") +
         secao("Pacotes internacionais", "Para viajar além das fronteiras.", por("Internacional"), "internacional") +
