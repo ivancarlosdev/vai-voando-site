@@ -608,3 +608,34 @@ body[data-pagina="quem-somos"] .logos img{max-height:48px}
 @media(max-width:700px){.qs-hero-grade,.qs-intro,.qs-mapa{grid-template-columns:1fr}.qs-hero{padding:42px 0}.qs-hero-foto{aspect-ratio:16/10;max-height:340px}.qs-mapa-arte img{max-height:250px}.qs-visita{display:grid}.qs-visita-acoes{display:flex;align-items:center;flex-wrap:wrap}}
 @media(max-width:480px){.qs-hero h1{font-size:2.25rem}.qs-etapas,.qs-servicos-grade{grid-template-columns:1fr}.qs-etapas li>span{margin-bottom:12px}.qs-servicos-grade a{min-height:0}.qs-servicos-grade h3{margin-top:16px}.qs-marcos{gap:14px}.qs-marcos span{min-width:85px}}
 @media(prefers-reduced-motion:reduce){.qs-servicos-grade a{transition:none}.qs-servicos-grade a:hover{transform:none}}
+
+/* Quem somos: leitura curta e sequência de decisão */
+.sobre-v2{overflow:hidden}.sobre-v2 h1,.sobre-v2 h2,.sobre-v2 h3{font-family:var(--f-titulo)}
+.sobre-rotulo{margin:0 0 12px;color:var(--petroleo);font:800 .76rem var(--f-titulo);text-transform:uppercase;letter-spacing:.13em}
+.sobre-abertura{background:#071735;color:#fff;padding:clamp(36px,4.5vw,64px) 0}
+.sobre-abertura-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,70px);align-items:center}
+.sobre-abertura .sobre-rotulo{color:var(--ouro)}
+.sobre-abertura h1{color:#fff;font-size:clamp(2.2rem,4.3vw,3.8rem);line-height:1.07;letter-spacing:-.045em;max-width:13ch;margin:0 0 18px}
+.sobre-abertura-texto>p:not(.sobre-rotulo){color:#e4eaf4;font-size:clamp(1rem,1.4vw,1.12rem);line-height:1.6;max-width:55ch;margin:0}
+.sobre-acoes{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:24px}.sobre-acoes>a:not(.btn-ouro){color:#fff;font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.sobre-foto{margin:0;aspect-ratio:1.55;overflow:hidden;border-radius:20px}.sobre-foto img{display:block;width:100%;height:100%;object-fit:cover}
+.sobre-corpo{padding-top:0;padding-bottom:64px}.sobre-corpo>section{scroll-margin-top:110px}
+.sobre-apresentacao{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,7vw,90px);padding:clamp(48px,6vw,76px) 0;border-bottom:1px solid var(--linha)}
+.sobre-v2 h2{font-size:clamp(1.8rem,3.25vw,2.85rem);line-height:1.14;letter-spacing:-.035em;margin:0;max-width:20ch}
+.sobre-apresentacao>div:last-child p{color:var(--suave);font-size:1.05rem;line-height:1.7;margin:0 0 15px}
+.sobre-ofertas{padding:clamp(48px,6vw,76px) 0;border-bottom:1px solid var(--linha)}.sobre-secao-titulo{margin-bottom:26px}.sobre-secao-titulo h2{max-width:24ch}
+.sobre-ofertas-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.sobre-ofertas-grid a{display:flex;flex-direction:column;background:#fff;border:1px solid var(--linha);border-radius:16px;padding:22px;min-width:0;min-height:200px;color:var(--marinho);text-decoration:none;transition:transform .2s,box-shadow .2s}
+.sobre-ofertas-grid a:hover,.sobre-ofertas-grid a:focus-visible{transform:translateY(-4px);box-shadow:var(--sombra)}.sobre-ofertas-grid span{color:var(--petroleo);font-weight:800;font-size:.8rem}
+.sobre-ofertas-grid h3{font-size:1.1rem;margin:22px 0 8px}.sobre-ofertas-grid p{color:var(--suave);font-size:.92rem;line-height:1.5;margin:0 0 16px}.sobre-ofertas-grid b{color:var(--petroleo);font-size:.87rem;margin-top:auto}
+.sobre-pagamento{color:var(--suave);margin:20px 0 0}.sobre-pagamento a{font-weight:800}
+.sobre-atendimento{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(30px,7vw,90px);padding:clamp(48px,6vw,76px) 0;border-bottom:1px solid var(--linha)}
+.sobre-atendimento>div>p:last-child{color:var(--suave);font-size:1.03rem;line-height:1.65;max-width:50ch}.sobre-atendimento ol{list-style:none;margin:0;padding:0}
+.sobre-atendimento li{display:flex;gap:20px;padding:15px 0;border-bottom:1px solid var(--linha)}.sobre-atendimento li:last-child{border-bottom:0}.sobre-atendimento li>span{font:800 1.1rem var(--f-titulo);color:var(--petroleo)}
+.sobre-atendimento h3{font-size:1.08rem;margin:0 0 4px}.sobre-atendimento li p{color:var(--suave);margin:0;line-height:1.5}
+.sobre-avaliacoes{margin:clamp(48px,6vw,76px) 0}.sobre-visita{display:flex;align-items:center;justify-content:space-between;gap:28px;background:#071735;color:#fff;border-radius:20px;padding:clamp(28px,4vw,48px)}
+.sobre-visita .sobre-rotulo{color:var(--ouro)}.sobre-visita h2{color:#fff}.sobre-visita p:last-child{color:#dbe5f1;margin:14px 0 0}.sobre-visita-acoes{display:grid;gap:14px;justify-items:start;flex-shrink:0}.sobre-visita-acoes>a:not(.btn-ouro){color:#fff;font-weight:800;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:900px){.sobre-ofertas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.sobre-abertura-grid,.sobre-apresentacao,.sobre-atendimento{grid-template-columns:1fr}.sobre-abertura h1{max-width:16ch}.sobre-foto{aspect-ratio:1.7}.sobre-visita{display:grid}.sobre-visita-acoes{display:flex;align-items:center;flex-wrap:wrap}}
+@media(max-width:480px){.sobre-abertura h1{font-size:2.25rem}.sobre-ofertas-grid{grid-template-columns:1fr}.sobre-ofertas-grid a{min-height:0}.sobre-ofertas-grid h3{margin-top:12px}.sobre-acoes{gap:18px}}
+@media(prefers-reduced-motion:reduce){.sobre-ofertas-grid a{transition:none}.sobre-ofertas-grid a:hover{transform:none}}
