@@ -44,7 +44,9 @@
 .cartao-claro p{margin:0 0 6px}
 .cartao-claro ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .cartao-claro li::before{content:"✓ ";color:var(--petroleo);font-weight:800}
-.oficial{margin:0}
+.visto-consentimento{display:flex!important;align-items:flex-start;gap:10px!important;font-weight:600!important;line-height:1.4}
+.visto-consentimento input{width:18px;min-width:18px;height:18px;margin:2px 0 0;accent-color:var(--petroleo)}
+#visto-retorno{margin:0;padding:12px 14px;border-radius:10px;background:var(--fundo-2);line-height:1.45}
 @media (max-width:860px){.visto-grade{grid-template-columns:1fr}.visto-topo{grid-template-columns:1fr 38%}}
 @media (max-width:480px){.form-visto{padding:20px 16px}.visto-topo{grid-template-columns:1fr 32%;gap:10px}}
 </style>
@@ -97,8 +99,10 @@
         <label>Comentários (opcional)
           <textarea name="comentarios"></textarea>
         </label>
-        <button class="btn-ouro" type="submit">Enviar pelo WhatsApp</button>
-        <p class="obs">Ao enviar, o WhatsApp abre com a mensagem pronta. É só tocar em enviar para falar com nossa equipe.</p>
+        <label class="visto-consentimento"><input name="consent" type="checkbox" required> Autorizo o uso destes dados para contato sobre a assessoria em visto.</label>
+        <button class="btn-ouro" type="submit">Enviar solicitação</button>
+        <p id="visto-retorno" role="status" aria-live="polite" hidden></p>
+        <p class="obs">Sua solicitação será encaminhada à equipe da agência. Não inclua números de documentos ou dados de passaporte nos comentários.</p>
       </form>
 
       <aside class="lateral">
@@ -119,7 +123,6 @@
             <li>País de destino e data prevista</li>
           </ul>
         </div>
-        <p class="oficial">Prefere o formulário oficial? <a class="btn-ouro" target="_blank" rel="noopener" href="https://b2b.youvisa.com.br/partners/vaivoando">Abrir em outra aba</a></p>
       </aside>
     </div>
   </div>
@@ -127,24 +130,6 @@
 <footer class="rodape" id="rodape"></footer>
 <script src="config.js"></script>
 <script src="layout.js?v=chat-20261113b"></script>
-<script>
-document.getElementById("form-visto").addEventListener("submit", function (ev) {
-  ev.preventDefault();
-  var f = ev.target;
-  if (!f.reportValidity()) return;
-  var v = function (n) { return f.elements[n].value.trim(); };
-  var linhas = [
-    "Olá! Vim pelo site e quero ajuda com visto.",
-    "",
-    "Nome do viajante: " + v("nome"),
-    "Telefone: " + v("telefone"),
-    "E-mail: " + v("email"),
-    "Destino: " + v("destino")
-  ];
-  if (v("comentarios")) linhas.push("Comentários: " + v("comentarios"));
-  window.open(waLink(linhas.join("\n")), "_blank", "noopener");
-});
-document.querySelector("[data-vis-clientes]").textContent = "Mais de " + window.AGENCIA.numeros.clientes.toLocaleString("pt-BR") + " clientes atendidos";
-</script>
+<script src="visto.js?v=crm-1"></script>
 </body>
 </html>
