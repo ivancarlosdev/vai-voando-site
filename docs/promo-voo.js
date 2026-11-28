@@ -263,6 +263,12 @@ async function carregarVoos() {
   try {
     const catalogo = await lerCatalogo("promo-voo.json.gz").catch(() => lerCatalogo(catalogoAtual));
     voos = prepararVoos(catalogo.voos);
+    if (new URLSearchParams(location.search).get("selecao") === "google-novembro") {
+      const destinos = ["Gramado (POA)","Caldas Novas (CLV)","Foz do Iguaçu (IGU)","Vitória (VIX)","Fortaleza (FOR)","Salvador (SSA)","Porto de Galinhas (REC)","Porto Seguro (BPS)","Natal (NAT)","Buenos Aires (AEP)"];
+      voos = destinos.map((destino) => voos.filter((voo) =>
+        voo.origem.startsWith("São Paulo") && voo.destino === destino
+      ).sort((a, b) => (a.total ?? Infinity) - (b.total ?? Infinity))[0]).filter(Boolean);
+    }
     for (const [campo, id] of [["origem", "origens"], ["destino", "destinos"]]) {
       const opcoes = [...new Set(voos.map((voo) => voo[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       porId(id).replaceChildren(...opcoes.map((opcao) => new Option(opcao, opcao)));
