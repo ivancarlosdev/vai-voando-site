@@ -281,7 +281,10 @@ async function carregarVoos() {
     [...cidades].sort((a, b) => a[1].localeCompare(b[1], "pt-BR")).forEach(([codigo, cidade]) => {
       geoCidade.append(new Option(cidade + " (" + codigo + ")", codigo));
     });
-    if (new URLSearchParams(location.search).get("selecao") !== "google-novembro") geo.sePermitido((centro) => ativarGeo(centro, "sua localização"));
+    const link = new URLSearchParams(location.search);
+    if (link.get("origem")) campos.origem.value = link.get("origem");
+    if (link.get("destino")) campos.destino.value = link.get("destino");
+    if (!link.has("selecao") && !link.has("origem") && !link.has("destino")) geo.sePermitido((centro) => ativarGeo(centro, "sua localização"));
     const atualizado = catalogo.atualizadoEm;
     if (voos.length) {
       porId("atualizado").textContent = "Catálogo atualizado em " +
