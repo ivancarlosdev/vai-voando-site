@@ -147,6 +147,7 @@
     if (!dados.exemplo) destaque();
     if ((editorial.banners || []).length) mostrarBannersEditoriais(editorial.banners);
     render();
+    if (pacoteLink) window.requestAnimationFrame(function () { $("pacotes").scrollIntoView({ block: "start" }); });
   }
   function mostrarBannersEditoriais(banners) {
     var banner = $('banner-promocoes'), i = 0, tempo;
@@ -314,10 +315,12 @@
   }
 
   // ---------- filtros ----------
-  function filtrosAtivos() { return !!(estado.cat || el.o.value || el.d.value || el.dt.value); }
+  var pacoteLink = new URLSearchParams(window.location.search).get("pacote");
+  function filtrosAtivos() { return !!(pacoteLink || estado.cat || el.o.value || el.d.value || el.dt.value); }
   function filtrar() {
     var dt = el.dt.value ? iso(el.dt.value) : null, de = dt && dt > hoje ? dt : hoje, out = [];
     rows.forEach(function (r) {
+      if (pacoteLink && r.p.slug !== pacoteLink) return;
       if (estado.cat && r.cat !== estado.cat) return;
       if (el.o.value && r.o.cidade !== el.o.value) return;
       if (el.d.value && norm(r.p.destino) !== el.d.value) return;
@@ -462,7 +465,8 @@
   [el.o, el.d, el.dt, el.ord].forEach(function (x) { x.addEventListener("change", alterou); });
   el.mais.addEventListener("click", function () { estado.visiveis += PAGINA; render(); });
   el.limpar.addEventListener("click", function () {
-    el.o.value = ""; el.d.value = ""; el.dt.value = ""; estado.cat = "";
+    el.o.value = ""; el.d.value = ""; el.dt.value = ""; estado.cat = ""; pacoteLink = null;
+    if (window.location.search) window.history.replaceState(null, "", window.location.pathname + window.location.hash);
     var a = $("aba-pacotes"); if (a) a.click(); else alterou();
   });
 
