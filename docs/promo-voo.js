@@ -281,7 +281,7 @@ async function carregarVoos() {
     [...cidades].sort((a, b) => a[1].localeCompare(b[1], "pt-BR")).forEach(([codigo, cidade]) => {
       geoCidade.append(new Option(cidade + " (" + codigo + ")", codigo));
     });
-    geo.sePermitido((centro) => ativarGeo(centro, "sua localização"));
+    if (new URLSearchParams(location.search).get("selecao") !== "google-novembro") geo.sePermitido((centro) => ativarGeo(centro, "sua localização"));
     const atualizado = catalogo.atualizadoEm;
     if (voos.length) {
       porId("atualizado").textContent = "Catálogo atualizado em " +
