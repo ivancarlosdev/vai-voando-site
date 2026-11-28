@@ -260,7 +260,14 @@ mais.addEventListener("click", () => {
 async function carregar() {
   try {
     const catalogo = await carregarCatalogo();
+    const params = new URLSearchParams(location.search);
     ofertas = catalogo.ofertas;
+    if (params.get("selecao") === "google-novembro") {
+      const roteiros = [["De Santos a Buenos Aires","Santos, Brasil",3],["Buenos Aires, Montevidéu, Itajaí","Santos, Brasil",7],["Navio Laura Pausini","Santos, Brasil",3],["Navio Daniel 2027","Santos, Brasil",3],["Zeca, Alcione e Jorge Aragão: O Maior Encontro do Samba em Alto-Mar","Santos, Brasil",3],["Navio do Gigante 2027 - Léo Santana","Santos, Brasil",3],["Festivalzinho em Alto-Mar","Santos, Brasil",3],["Ilhabela, Buenos Aires, Montevidéu, Balneário Camboriú","Rio de Janeiro, Brasil",8],["De Rio de Janeiro a Buenos Aires","Rio de Janeiro, Brasil",3],["Ilhabela, Itajaí","Santos, Brasil",4]];
+      ofertas = roteiros.map(([titulo, porto, noites]) => ofertas.find((o) =>
+        o.titulo === titulo && o.porto === porto && o.noites === noites
+      )).filter(Boolean);
+    }
     for (const campo of ["porto", "destino", "cia"]) {
       const opcoes = [...new Set(ofertas.map((o) => o[campo]))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       campos[campo].append(...opcoes.map((opcao) => new Option(opcao, opcao)));
@@ -277,7 +284,6 @@ async function carregar() {
     porId("cruzeiro-oportunidades").hidden = !total;
     carregado = true;
 
-    const params = new URLSearchParams(location.search);
     const ida = params.get("saida");
     const oferta = ofertas.find((o) => chaveCruzeiro(o) === params.get("roteiro") &&
       o.saidas.some((s) => s.ida === ida));
