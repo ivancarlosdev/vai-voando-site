@@ -326,14 +326,14 @@
     var origemPreferida = pacoteLink && ["Ribeirão Preto", "Campinas", "São Paulo"].find(function (cidade) {
       return rows.some(function (r) { return r.p.slug === pacoteLink && r.o.cidade === cidade; });
     });
-    var origensSelecao = {};
+    var origensSelecao = {}, vistosSelecao = {};
     if (selecaoLink) selecaoLink.forEach(function (slug) {
       origensSelecao[slug] = ["Ribeirão Preto", "Campinas", "São Paulo"].find(function (cidade) {
         return rows.some(function (r) { return r.p.slug === slug && r.o.cidade === cidade; });
       });
     });
     rows.forEach(function (r) {
-      if (selecaoLink && selecaoLink.indexOf(r.p.slug) < 0) return;
+      if (selecaoLink && (selecaoLink.indexOf(r.p.slug) < 0 || vistosSelecao[r.p.slug])) return;
       if (selecaoLink && origensSelecao[r.p.slug] && r.o.cidade !== origensSelecao[r.p.slug]) return;
       if (pacoteLink && r.p.slug !== pacoteLink) return;
       if (origemPreferida && r.o.cidade !== origemPreferida) return;
@@ -342,7 +342,7 @@
       if (el.d.value && norm(r.p.destino) !== el.d.value) return;
       var prox = null;
       for (var i = 0; i < r.ex.length; i++) { if (r.ex[i].ini >= de) { prox = r.ex[i]; break; } }
-      if (prox) out.push({ r: r, prox: prox });
+      if (prox) { out.push({ r: r, prox: prox }); if (selecaoLink) vistosSelecao[r.p.slug] = 1; }
     });
     var porData = el.ord.value === "data";
     out.sort(function (a, b) {
