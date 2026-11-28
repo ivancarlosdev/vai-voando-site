@@ -148,7 +148,7 @@
     if (!dados.exemplo) destaque();
     if ((editorial.banners || []).length) mostrarBannersEditoriais(editorial.banners);
     render();
-    if (pacoteLink) window.requestAnimationFrame(function () { $("pacotes").scrollIntoView({ block: "start" }); });
+    if (pacoteLink || selecaoLink || destinoLink) window.requestAnimationFrame(function () { $("pacotes").scrollIntoView({ block: "start" }); });
   }
   function mostrarBannersEditoriais(banners) {
     var banner = $('banner-promocoes'), i = 0, tempo;
@@ -318,14 +318,23 @@
   // ---------- filtros ----------
   var pacoteLink = new URLSearchParams(window.location.search).get("pacote");
   var destinoLink = new URLSearchParams(window.location.search).get("destino");
-  function filtrosAtivos() { return !!(pacoteLink || estado.cat || el.o.value || el.d.value || el.dt.value); }
+  var selecaoLink = new URLSearchParams(window.location.search).get("selecao") === "google-novembro" ? ["maceiocomgungafrancesrod","natalcomcitytourpraiacam","portodegalinhascommarago-2","fortalezabasico","salvadorcommorrodesaopau","joaopessoacompordosol","rioquentecomhotparkeparq","vitoriacomcitytourpraiad","gramadotransferbustour","serragaucha3em1gramadono"] : null;
+  function filtrosAtivos() { return !!(pacoteLink || selecaoLink || estado.cat || el.o.value || el.d.value || el.dt.value); }
   function filtrar() {
     var dt = el.dt.value ? iso(el.dt.value) : null, de = dt && dt > hoje ? dt : hoje, out = [];
-    if (pacoteLink && !dt) de = new Date(hoje.getTime() + 3 * 864e5);
+    if ((pacoteLink || selecaoLink) && !dt) de = new Date(hoje.getTime() + 3 * 864e5);
     var origemPreferida = pacoteLink && ["Ribeirão Preto", "Campinas", "São Paulo"].find(function (cidade) {
       return rows.some(function (r) { return r.p.slug === pacoteLink && r.o.cidade === cidade; });
     });
+    var origensSelecao = {};
+    if (selecaoLink) selecaoLink.forEach(function (slug) {
+      origensSelecao[slug] = ["Ribeirão Preto", "Campinas", "São Paulo"].find(function (cidade) {
+        return rows.some(function (r) { return r.p.slug === slug && r.o.cidade === cidade; });
+      });
+    });
     rows.forEach(function (r) {
+      if (selecaoLink && selecaoLink.indexOf(r.p.slug) < 0) return;
+      if (selecaoLink && origensSelecao[r.p.slug] && r.o.cidade !== origensSelecao[r.p.slug]) return;
       if (pacoteLink && r.p.slug !== pacoteLink) return;
       if (origemPreferida && r.o.cidade !== origemPreferida) return;
       if (estado.cat && r.cat !== estado.cat) return;
@@ -472,7 +481,7 @@
   [el.o, el.d, el.dt, el.ord].forEach(function (x) { x.addEventListener("change", alterou); });
   el.mais.addEventListener("click", function () { estado.visiveis += PAGINA; render(); });
   el.limpar.addEventListener("click", function () {
-    el.o.value = ""; el.d.value = ""; el.dt.value = ""; estado.cat = ""; pacoteLink = null; destinoLink = null;
+    el.o.value = ""; el.d.value = ""; el.dt.value = ""; estado.cat = ""; pacoteLink = null; destinoLink = null; selecaoLink = null;
     if (window.location.search) window.history.replaceState(null, "", window.location.pathname + window.location.hash);
     var a = $("aba-pacotes"); if (a) a.click(); else alterou();
   });
