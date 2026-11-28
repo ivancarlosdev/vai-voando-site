@@ -142,6 +142,7 @@
       el.d.appendChild(g);
     });
 
+    if (destinoLink) el.d.value = norm(destinoLink);
     preencherCidadesGeo();
     geo.sePermitido(function (centro) { ativarGeo(centro, "sua localização"); });
     if (!dados.exemplo) destaque();
@@ -316,6 +317,7 @@
 
   // ---------- filtros ----------
   var pacoteLink = new URLSearchParams(window.location.search).get("pacote");
+  var destinoLink = new URLSearchParams(window.location.search).get("destino");
   function filtrosAtivos() { return !!(pacoteLink || estado.cat || el.o.value || el.d.value || el.dt.value); }
   function filtrar() {
     var dt = el.dt.value ? iso(el.dt.value) : null, de = dt && dt > hoje ? dt : hoje, out = [];
@@ -465,7 +467,7 @@
   [el.o, el.d, el.dt, el.ord].forEach(function (x) { x.addEventListener("change", alterou); });
   el.mais.addEventListener("click", function () { estado.visiveis += PAGINA; render(); });
   el.limpar.addEventListener("click", function () {
-    el.o.value = ""; el.d.value = ""; el.dt.value = ""; estado.cat = ""; pacoteLink = null;
+    el.o.value = ""; el.d.value = ""; el.dt.value = ""; estado.cat = ""; pacoteLink = null; destinoLink = null;
     if (window.location.search) window.history.replaceState(null, "", window.location.pathname + window.location.hash);
     var a = $("aba-pacotes"); if (a) a.click(); else alterou();
   });
