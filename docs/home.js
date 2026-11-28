@@ -321,6 +321,7 @@
   function filtrosAtivos() { return !!(pacoteLink || estado.cat || el.o.value || el.d.value || el.dt.value); }
   function filtrar() {
     var dt = el.dt.value ? iso(el.dt.value) : null, de = dt && dt > hoje ? dt : hoje, out = [];
+    if (pacoteLink && !dt) de = new Date(hoje.getTime() + 3 * 864e5);
     var origemPreferida = pacoteLink && ["Ribeirão Preto", "Campinas", "São Paulo"].find(function (cidade) {
       return rows.some(function (r) { return r.p.slug === pacoteLink && r.o.cidade === cidade; });
     });
